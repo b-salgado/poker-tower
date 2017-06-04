@@ -141,8 +141,8 @@ define(function(){
           var drawPosLeft = null;
           var drawPosTop = null;
           var cardScale_xy = [null, null];
-          //console.log(this.playersAtTable[player].playerInfo.IS_PLAYING);
-          if(this.playersAtTable[player].playerInfo.IS_PLAYING){
+          //console.log(this.playersAtTable[player].playerInfo.is_playing);
+          if(this.playersAtTable[player].playerInfo.is_playing){
             cardsInHand = this.playersAtTable[player].playerInfo.cardsInHand;
             //playerHtmlRect = this.playersAtTable[player].html.getBoundingClientRect();
             playerHtmlRect = document.getElementById(this.playersAtTable[player].playerInfo.uuid).getBoundingClientRect();
@@ -164,7 +164,7 @@ define(function(){
       var currentHandPlayers = game_state_pkg.currentHandPlayers;
       for(player in currentHandPlayers){
         if( !(currentHandPlayers[player].uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
-          this.playersAtTable[player].playerInfo.IS_PLAYING = true;
+          this.playersAtTable[player].playerInfo.is_playing = true;
           this.playersAtTable[player].playerInfo.cardsInHand = [];
           this.playersAtTable[player].playerInfo.cardsInHand[0] = this.nullCard;
           this.playersAtTable[player].playerInfo.cardsInHand[1] = this.nullCard;
