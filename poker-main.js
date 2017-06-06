@@ -7,6 +7,7 @@ require(["javascript/poker/poker_mod_conf.js"], function(){
       PlayingCardsSocketEngine.init();
       PokerGameManager.THPSocket = new PlayingCardsSocketEngine.TEXAS_HOLDEM_POKER(PlayingCardsSocketEngine.socket, PokerGameManager);
       PokerGameManager.testMode();
+
       Input.init();
       GUI.init();
 

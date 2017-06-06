@@ -9,6 +9,19 @@ define(["PokerGameManager"], function(pgm){
         pgm.THPSocket.registerTableOnline();
       });
 
+      document.getElementById("poker-raise").addEventListener("click", function(e){
+        var pokerInputVal = document.getElementById("poker-inputbox").value.trim();
+        pokerInputVal = Number(pokerInputVal); //Return NaN if char in string
+        if(pokerInputVal){
+          console.log(pgm.THPSocket);
+          pgm.THPSocket.socket.emit("PLAYER_BET", {table_uuid: pgm.table_uuid, betValue: pokerInputVal} );
+        }
+        else{
+          alert("Enter a numerical value!");
+        }
+        //if
+      });
+
       window.addEventListener("keydown", function(e){
         console.log(e.which);
         if(e.which === 78 || e.keyCode === 78){//n

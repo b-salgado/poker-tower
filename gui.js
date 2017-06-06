@@ -77,6 +77,12 @@ define(function(){
       this.clientPlayer.html.getElementsByClassName("poker-player-icon")[0].src = "./javascript/poker/assets/player_icons/"+playerInfoPack.icon;
     },
 
+    alertPlayerBet: function(){
+      var clientPlayerCharInput = document.getElementById(this.client_uuid).getElementsByClassName("poker-gui-bet-char-input")[0];
+      clientPlayerCharInput.style.backgroundColor = "yellow";
+      clientPlayerCharInput.style.color = "red";
+    },
+
     imageLoader: function(src){
       var image = new Image();
       image.src = src;

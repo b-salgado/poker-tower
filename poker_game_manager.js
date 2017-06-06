@@ -5,6 +5,7 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
     playerClient: null,
     socketEvents: null,
     table: null,
+    table_uuid: null,
     THPSocket: null,
     numberOfTables: 0,
 
@@ -23,6 +24,9 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
           GUI.scaleFonts();
           GUI.scaleIcons();
           break;
+        case "ALERT_PLAYER_BET":
+          GUI.alertPlayerBet();
+          break;
         case "UPDATE_CLIENT_UUID":
           //this.client_uuid = event_package.uuid;
           GUI.client_uuid  = event_package.uuid;
@@ -37,6 +41,7 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
           GUI.updateCardHand(event_package.game_state_pkg);
           break;
         case "UPDATE_TABLE_UUID":
+          this.table_uuid = event_package.table_uuid;
           GUI.updateRoomUUID(event_package.table_uuid);
           break;
         case "UPDATE_SPLASH_SCREEN_TABLE_LIST":

@@ -22,7 +22,7 @@ ioPoker.on("connection", function(socket){
 
 		pokerTableList[table.uuid] = table;
 
-		console.log(pokerTableList);
+		//console.log(pokerTableList);
 		ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table.uuid);
 	});
 
@@ -31,12 +31,18 @@ ioPoker.on("connection", function(socket){
 			joinTable(playerInfoPack, table_uuid, socket);
 	});
 
+	socket.on("PLAYER_BET", function(bet_package){
+		var table = pokerTableList[bet_package.table_uuid];
+		if(table.waitOnBetFrom === socket.id){
+			console.log("this is player");
+		}
+	});
 
 	socket.on("disconnect", function(){
 		var table_uuid = pokerPlayerList[socket.id];
 		//console.log("pokerlsi "+ pokerPlayerList[socket.id], socket.id);
 		if(table_uuid){ //If the player is part of a table
-			console.log(pokerTableList[table_uuid].players[socket.id]);
+			//console.log(pokerTableList[table_uuid].players[socket.id]);
 			socket.to(table_uuid).emit("PLAYER_LEFT", pokerTableList[table_uuid].players[socket.id])
 
 			delete pokerTableList[table_uuid].players[socket.id];
@@ -53,18 +59,20 @@ ioPoker.on("connection", function(socket){
 
 });
 
-function checkGameState(){
-	if(haveAllPlayersBet()){
-
+function checkGameState(table_uuid){
+	if(haveAllPlayersBet(table_uuid)){
+		console.log("All players have bet. . .");
 	}
 }
 
-function haveAllPlayersBet(){
+function haveAllPlayersBet(table_uuid){
 	var cardPlayer = null;
-	for(player in pokerTableList.players){
-		cardPlayer = pokerTableList.players[player];
-		if(player.is_playing && !player.placed_bet){
-			ioPoker.to(player.uuid).emit("PLACE_BET");
+	var table = pokerTableList[table_uuid];
+	for(player in table.players){
+		cardPlayer = table.players[player];
+		if(cardPlayer.is_playing && !cardPlayer.placed_bet){
+			ioPoker.to(cardPlayer.uuid).emit("ALERT_PLAYER_BET");
+			table.waitOnBetFrom = cardPlayer.uuid;
 			return false;
 		}
 	}
@@ -94,6 +102,7 @@ function joinTable(playerInfoPack, table_uuid, socket){
 				if(Object.keys(pokerTableList[table_uuid].players).length > 1){
 					setTableState(pokerTableList[table_uuid]);
 					sendPlayersCards(table_uuid);
+					checkGameState(table_uuid);
 				}
 			}
 			else if(pokerTableList[table_uuid].game_started === true){
@@ -117,7 +126,7 @@ function resetTable(table_uuid){
 		table.players[player].cardsInHand = [];
 	}
 
-	console.log( pokerTableList[table_uuid] );
+	//console.log( pokerTableList[table_uuid] );
 }
 
 function newTable(){
@@ -127,6 +136,7 @@ function newTable(){
 		numOfComCardsOnTable: 0,
 		players: {}, // total people at table
 		uuid: null,
+		waitOnBetFrom: null,
 	}
 }
 
@@ -167,7 +177,7 @@ function setTableState(table){
 		table.communityCards.push(cardDeck[card]);
 	}
 
-	console.log(drawnCardList);
+	//console.log(drawnCardList);
 }
 
 function NewPlayer(name, uuid){

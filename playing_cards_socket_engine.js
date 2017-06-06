@@ -11,9 +11,12 @@ define(["CryptoJS"], function(CryptoJS){
     },
 
     TEXAS_HOLDEM_POKER: function(socket, PGM){
-      var socket = socket;
+      //Private
       var pgm = PGM;
       var self = this;
+
+      //public
+      this.socket = socket;
 
       //Event Senders
       this.registerTableOnline = function(table){
@@ -59,6 +62,11 @@ define(["CryptoJS"], function(CryptoJS){
 
       socket.on("PLAYER_LEFT", function(player){
         pgm.updateGUI( {e:"REMOVE_PLAYER", player:player} );
+      });
+
+      socket.on("ALERT_PLAYER_BET", function(){
+        pgm.updateGUI( {e:"ALERT_PLAYER_BET"} );
+        //console.log("placed_bet");
       });
 
       socket.on("CARD_HAND", function(game_state_pkg){
