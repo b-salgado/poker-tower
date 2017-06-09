@@ -2,6 +2,7 @@ define(function(){
   return{
     canvas: null,
     cardsSprite: null,
+    communityCards: [],
     CARD_XY: [125, 181],
     CARD_SCALE: [70,100],
     background: null,
@@ -9,6 +10,8 @@ define(function(){
 
     playersAtTable: {},
     client_uuid: null,
+
+    renderObjects:[],
 
     nullCard:{
       FACE_DOWN: true,
@@ -75,10 +78,20 @@ define(function(){
       this.clientPlayer.html.id = playerInfoPack.uuid; //set id
       this.clientPlayer.html.getElementsByClassName("poker-player-name")[0].innerText = playerInfoPack.name; //set name
       this.clientPlayer.html.getElementsByClassName("poker-player-icon")[0].src = "./javascript/poker/assets/player_icons/"+playerInfoPack.icon;
+      this.clientPlayer.html.getElementsByClassName("poker-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
+    },
+
+    addCommunityCard:function(card){
+      var spaceBetweenCards = 10;
+      var offset = 150;
+      card.scale_xy = [70, 100];
+      card.pos_xy = [this.communityCards.length * (card.scale_xy[0] + spaceBetweenCards) + offset, window.innerHeight/2 - card.scale_xy[1]];
+      this.communityCards.push(card);
+      this.renderObjects.push(card);
     },
 
     alertPlayerBet: function(){
-      var clientPlayerCharInput = document.getElementById(this.client_uuid).getElementsByClassName("poker-gui-bet-char-input")[0];
+      var clientPlayerCharInput = document.getElementById("poker-inputbox");
       clientPlayerCharInput.style.backgroundColor = "yellow";
       clientPlayerCharInput.style.color = "red";
     },
@@ -117,7 +130,7 @@ define(function(){
     drawAllCards: function(){
       this.drawPlayersCards();
       this.drawClientPlayerCards();
-      //drawCommunityCards();
+      this.renderGameObjects();
     },
 
     drawClientPlayerCards: function(){
@@ -136,6 +149,20 @@ define(function(){
         this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[1].VALUE-2)*this.CARD_XY[0], cardsInHand[1].SUIT*this.CARD_XY[1],
         this.CARD_XY[0], this.CARD_XY[1], drawPosLeft + cardScale_xy[0] + cardPadding, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
       }
+    },
+
+    renderGameObjects:function(){
+      var renderObject = null;
+      for(var renObjIndex=0; renObjIndex<this.renderObjects.length; renObjIndex++){
+        renderObject = this.renderObjects[renObjIndex];
+        //console.log(renderObject);
+        this.canvas2DContext.drawImage(this.cardsSprite, (renderObject.VALUE-2)*this.CARD_XY[0], renderObject.SUIT*this.CARD_XY[1],
+        this.CARD_XY[0], this.CARD_XY[1], renderObject.pos_xy[0], renderObject.pos_xy[1], renderObject.scale_xy[0], renderObject.scale_xy[1]);
+      }
+    },
+
+    resetRenderedGameObjects:function(){
+      this.renderObjects = [];
     },
 
     drawPlayersCards: function(){
@@ -195,6 +222,24 @@ define(function(){
       this.scaleFonts();
     },
 
+    updatePlayerWealth:function(player){
+      var playerGraphic = document.getElementById(player.uuid);
+      //console.log(player, playerGraphic);
+      playerGraphic.getElementsByClassName("poker-player-wealth")[0].innerText = player.wealth+" ₪";
+    },
+
+    updateTablePot:function(pot){
+      console.log(pot);
+      document.getElementById("poker-room-pot").innerText = pot+" ₪";
+    },
+
+    resetInputbox:function(){
+      var clientPlayerCharInput = document.getElementById("poker-inputbox");
+      clientPlayerCharInput.style.backgroundColor = "black";
+      clientPlayerCharInput.style.color = "green";
+      clientPlayerCharInput.value = "";
+    },
+
     scaleIcons:function(){
       var iconsToBeScaled = document.getElementsByClassName("poker-player-icon");
       for(var icon=0; icon<iconsToBeScaled.length; icon++){
@@ -237,7 +282,7 @@ define(function(){
             <label class="scalable-text poker-player-name"></label>
           </div>
           <div class="poker-player-wealth-container">
-            <label class="scalable-text poker-player-wealth">100 ₪</label>
+            <label class="scalable-text poker-player-wealth">`+playerInfoPack.wealth+` ₪</label>
           </div>
         </span>
       </div>`
