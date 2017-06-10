@@ -69,13 +69,30 @@ define(["CryptoJS"], function(CryptoJS){
         //console.log("placed_bet");
       });
 
+      socket.on("COMMUNITY_CARD", function(card){
+        pgm.updateGUI( {e:"ADD_COMMUNITY_CARD", card:card} );
+      });
+
       socket.on("CARD_HAND", function(game_state_pkg){
         console.log(game_state_pkg);
         pgm.updateGUI( {e:"UPDATE_CARD_HAND", game_state_pkg: game_state_pkg} ); //currentHandPlayers, clientHand
       });
 
+      socket.on("RESET_RENDERED_GAME_OBJECTS", function(){
+        pgm.updateGUI( {e:"RESET_RENDERED_GAME_OBJECTS"} );
+      });
+
+      socket.on("UPDATE_PLAYER_WEALTH", function(player_pkg){
+        console.log(player_pkg);
+        pgm.updateGUI( {e:"UPDATE_PLAYER_WEALTH", player:player_pkg.player} );
+      });
+
       socket.on("UPDATE_CLIENT_UUID", function(uuid){
         pgm.updateGUI( {e:"UPDATE_CLIENT_UUID", uuid:uuid} );
+      });
+
+      socket.on("UPDATE_TABLE_POT", function(pot){
+        pgm.updateGUI( {e:"UPDATE_TABLE_POT", pot:pot} );
       });
 
     }
