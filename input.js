@@ -12,12 +12,16 @@ define(["PokerGameManager"], function(pgm){
       document.getElementById("poker-raise").addEventListener("click", function(e){
         var pokerInputVal = document.getElementById("poker-inputbox").value.trim();
         pokerInputVal = Number(pokerInputVal); //Return NaN if char in string
-        if(pokerInputVal){
-          console.log(pgm.THPSocket);
-          pgm.THPSocket.socket.emit("PLAYER_BET", {table_uuid: pgm.table_uuid, betValue: pokerInputVal} );
-        }
-        else{
+        if( !(pokerInputVal) ){
           alert("Enter a numerical value!");
+        }
+        else if(pokerInputVal<0){
+          alert("Enter a numerical value greater than 0!");
+        }
+        else if(pokerInputVal){
+          console.log(pgm.THPSocket);
+          pgm.THPSocket.socket.emit("PLAYER_RAISE", {table_uuid: pgm.table_uuid, betValue: pokerInputVal} );
+          pgm.updateGUI( {e:"RESET_INPUTBOX"} );
         }
         //if
       });
