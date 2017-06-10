@@ -11,7 +11,7 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
 
     testMode: function(){
       this.playerClient = { "cardhand": null,
-                            "currency": null,
+                            "wealth": 90,
                             "icon": "0",
                             "name": "hoss"  };
 
@@ -19,6 +19,9 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
 
     updateGUI: function(event_package){
       switch(event_package.e){
+        case "ADD_COMMUNITY_CARD":
+          GUI.addCommunityCard(event_package.card);
+          break;
         case "ADD_PLAYER": //Reduce all player adding and removing to one playerUpdate() function
           GUI.addPlayer(event_package.player);
           GUI.scaleFonts();
@@ -37,8 +40,20 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
         case "REMOVE_SPLASH_SCREEN":
           GUI.removeSplashScreen();
           break;
+        case "RESET_INPUTBOX":
+          GUI.resetInputbox();
+          break;
+        case "RESET_RENDERED_GAME_OBJECTS":
+          GUI.resetRenderedGameObjects();
+          break;
         case "UPDATE_CARD_HAND":
           GUI.updateCardHand(event_package.game_state_pkg);
+          break;
+        case "UPDATE_PLAYER_WEALTH":
+          GUI.updatePlayerWealth(event_package.player);
+          break;
+        case "UPDATE_TABLE_POT":
+          GUI.updateTablePot(event_package.pot);
           break;
         case "UPDATE_TABLE_UUID":
           this.table_uuid = event_package.table_uuid;
