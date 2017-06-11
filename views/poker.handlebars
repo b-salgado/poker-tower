@@ -1,0 +1,72 @@
+<canvas id="poker-canvas"></canvas>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="lib/require.js"></script>
+<script src="poker-main.js"></script>
+
+<div class="poker-splash-screen" id="poker-splash-screen">
+
+  <form class="poker-icon-sel-form">
+    <h2 class="poker-icon-sel-form-header">Choose Your Icon:</h2>
+    {{#each partials.pokerIcons}}
+      <div class="poker-icon-sel-individual-container">
+        <img class="poker-icon-radio-button-img" src="./assets/player_icons/{{this}}.jpg"></img>
+        <input type="radio" name="poker-icon-selection" class="poker-icon-sel-radio-button">
+      </div>
+    {{/each}}
+  </form>
+
+  <div class="poker-splash-screen-gen-inferface">
+
+    <div class="poker-splash-screen-gen-top">
+      <h1 class="poker-splash-screen-game-title">Poker Pond</h1>
+      <form class="poker-splash-screen-player-profile">
+        Enter Name: <br>
+        <input class="poker-splash-input-player-name" id="poker-splash-input-player-name" value="">
+      </form>
+    </div>
+
+    <div class="poker-splash-screen-gen-bottom">
+      <form class="center-items poker-splash-screen-create-table">
+        <button type="button" id="poker-splash-screen-create-table-button">Click to Create Table</button>
+      </form>
+      <div class="poker-splash-screen-current-tables" id="poker-splash-screen-current-tables">
+        <!-- Dynamically Set Using ws and Templates-->
+      </div>
+    </div>
+
+  </div>
+
+
+
+</div>
+
+<div class="poker-players-container-top" id="poker-players-container-top"></div>
+
+<div class="poker-room-uuid-container">
+  <label class="poker-room-uuid scalable-text" id="poker-room-uuid">Not in Room</label>
+</div>
+
+<div class="poker-room-pot-container">
+  <label class="poker-room-pot scalable-text" id="poker-room-pot">0 ₪</label>
+</div>
+
+<div class="poker-players-container-bottom">
+  <div class="poker-player-client" id="player0">
+    <img class="poker-player-icon" src=""></img>
+    <span class="poker-player-stat-container">
+      <div class="poker-player-name-container">
+        <label class="scalable-text poker-player-name"></label>
+      </div>
+      <div class="poker-player-wealth-container">
+        <label class="scalable-text poker-player-wealth">0 ₪</label>
+      </div>
+    </span>
+    <span class="poker-actions-container">
+      <input id="poker-inputbox" class="poker-gui-bet-char-input"></input>
+      <button class="poker-action" id="poker-call">CALL</botton>
+      <button class="poker-action" id="poker-raise">RAISE</botton>
+      <button class="poker-action" id="poker-fold">FOLD</botton>
+      <button class="poker-action" id="poker-chat">CHAT</botton>
+    </span>
+  </div>
+</div>

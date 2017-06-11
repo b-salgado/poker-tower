@@ -1,4 +1,4 @@
-define(["CryptoJS"], function(CryptoJS){
+define(function(){
   return{
     socket: null,
 
@@ -99,13 +99,3 @@ define(["CryptoJS"], function(CryptoJS){
 
   }
 });
-
-/*
-//var key = CryptoJS.enc.Base64.parse("supadupasecretkey");
-var key = "supadupasecretkey";
-var iv = CryptoJS.enc.Base64.parse("puresalt");
-var message = "hello hoss";
-var encrypted = CryptoJS.AES.encrypt(message, key);
-console.log(encrypted.toString());
-console.log(CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8));
-*/

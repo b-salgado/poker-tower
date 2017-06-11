@@ -24,9 +24,9 @@ define(function(){
       var outerObjEnv = this;
       this.canvas = document.getElementById("poker-canvas");
       this.canvas2DContext = this.canvas.getContext("2d");
-      this.background = this.imageLoader("/javascript/poker/assets/red_poker.jpg");
+      this.background = this.imageLoader("./assets/red_poker.jpg");
 
-      this.cardsSprite = this.imageLoader("/javascript/poker/assets/french_deck_0.png");
+      this.cardsSprite = this.imageLoader("./assets/french_deck_0.png");
       this.canvas2DContext.fillStyle = "rgba(100,100,0,1.0)";
 
       document.getElementsByTagName("body")[0].style.backgroundColor = "#000000";
@@ -39,8 +39,8 @@ define(function(){
       window.onresize = function(){
         outerObjEnv.canvas.width = window.innerWidth;
         outerObjEnv.canvas.height = window.innerHeight;
-        outerObjEnv.scaleIcons();
-        outerObjEnv.scaleFonts();
+        //outerObjEnv.scaleIcons();
+        //outerObjEnv.scaleFonts();
       }
       /*============================================*/
       this.render();
@@ -77,7 +77,7 @@ define(function(){
       this.clientPlayer.html = document.getElementsByClassName("poker-player-client")[0]; //find client
       this.clientPlayer.html.id = playerInfoPack.uuid; //set id
       this.clientPlayer.html.getElementsByClassName("poker-player-name")[0].innerText = playerInfoPack.name; //set name
-      this.clientPlayer.html.getElementsByClassName("poker-player-icon")[0].src = "./javascript/poker/assets/player_icons/"+playerInfoPack.icon;
+      this.clientPlayer.html.getElementsByClassName("poker-player-icon")[0].src = "./assets/player_icons/"+playerInfoPack.icon;
       this.clientPlayer.html.getElementsByClassName("poker-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
     },
 
@@ -219,7 +219,7 @@ define(function(){
     updateRoomUUID:function(new_room_uuid){
       var displayedRoomUUID = document.getElementById("poker-room-uuid");
       displayedRoomUUID.innerText = new_room_uuid;
-      this.scaleFonts();
+      //this.scaleFonts();
     },
 
     updatePlayerWealth:function(player){
@@ -260,15 +260,17 @@ define(function(){
         var labelStyle = window.getComputedStyle(labelsToBeScaled[label]);
         var labelNumFontSize = Number(labelStyle.fontSize.slice(0,-2));
         var labelParentStyle = window.getComputedStyle(labelsToBeScaled[label].parentElement)
-        while(Number(labelStyle.width.slice(0,-2)) < Number(labelParentStyle.width.slice(0,-2)) && Number(labelStyle.height.slice(0,-2)) < Number(labelParentStyle.height.slice(0,-2))){
+        while(Number(labelStyle.width.slice(0,-2)) < Number(labelParentStyle.width.slice(0,-2)) && Number(labelStyle.height.slice(0,-2)) < Number(labelParentStyle.height.slice(0,-2)) && count<100){
           labelNumFontSize += 0.5;
           labelsToBeScaled[label].style.fontSize = labelNumFontSize+"px";
           labelStyle = window.getComputedStyle(labelsToBeScaled[label]);
+          count++;
         }
-        while(Number(labelStyle.width.slice(0,-2)) > Number(labelParentStyle.width.slice(0,-2)) || Number(labelStyle.height.slice(0,-2)) > Number(labelParentStyle.height.slice(0,-2))){
+        while(Number(labelStyle.width.slice(0,-2)) > Number(labelParentStyle.width.slice(0,-2)) || Number(labelStyle.height.slice(0,-2)) > Number(labelParentStyle.height.slice(0,-2)) && count<100){
           labelNumFontSize += -0.5;
           labelsToBeScaled[label].style.fontSize = labelNumFontSize+"px";
           labelStyle = window.getComputedStyle(labelsToBeScaled[label]);
+          count++;
         }
 
       }
@@ -276,7 +278,7 @@ define(function(){
 
     PokerPlayerTemplate: function(playerInfoPack){
       return `<div class="poker-player" id=`+playerInfoPack.uuid+`>
-        <img class="poker-player-icon" src="./javascript/poker/assets/player_icons/`+playerInfoPack.icon+`"></img>
+        <img class="poker-player-icon" src="./assets/player_icons/`+playerInfoPack.icon+`"></img>
         <span class="poker-player-stat-container">
           <div class="poker-player-name-container">
             <label class="scalable-text poker-player-name"></label>
