@@ -23,7 +23,16 @@ define(["PokerGameManager"], function(pgm){
           pgm.THPSocket.socket.emit("PLAYER_RAISE", {table_uuid: pgm.table_uuid, betValue: pokerInputVal} );
           pgm.updateGUI( {e:"RESET_INPUTBOX"} );
         }
+
         //if
+      });
+
+      document.getElementById("poker-call").addEventListener("click", function(e){
+          pgm.THPSocket.socket.emit("PLAYER_CALL", {table_uuid: pgm.table_uuid} );
+      });
+
+      document.getElementById("poker-fold").addEventListener("click", function(e){
+          pgm.THPSocket.socket.emit("PLAYER_FOLD", {table_uuid: pgm.table_uuid} );
       });
 
       window.addEventListener("keydown", function(e){

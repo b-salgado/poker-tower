@@ -1,5 +1,6 @@
 var ioPoker = io.of("/poker");
 var uuidObj = require("uuid");
+//var event = require("./poker_event_handlers.js");
 
 var pokerTableList = {};
 var cardDeck = createFrenchDeck();
@@ -93,7 +94,7 @@ ioPoker.on("connection", function(socket){
 	socket.on("PLAYER_FOLD", function(bet_package){
 		var table = pokerTableList[bet_package.table_uuid];
 		if(table.waitOnBetFrom === socket.id){
-			var betValue = table.lastRaiseAmount;
+			//var betValue = table.lastRaiseAmount;
 			table.players[socket.id].is_playing = false;
 			checkGameState(table.uuid);
 		}
@@ -134,7 +135,7 @@ function takeAntes(table){
 }
 
 function sendUpdatePlayerWealth(table, player){
-	ioPoker.to(table.uuid).emit("UPDATE_PLAYER_WEALTH", { player:getPlayersAtTable(table.uuid, player.uuid) } );
+	ioPoker.to(table.uuid).emit("UPDATE_PLAYER_WEALTH", { player:player } );
 }
 
 function sendUpdateTablePot(table){

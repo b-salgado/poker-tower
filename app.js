@@ -6,7 +6,7 @@ global.io = require("socket.io")(http);
 
 var handleBars = require("express-handlebars").create({defaultLayout:"main"});
 
-var pokSocketEngine = require("./poker_socket_engine.js");
+var pokerSocketEngine = require("./poker_socket_engine.js");
 
 var pokerIcons = [0,1,2,3,4,5,6,7,8];
 
