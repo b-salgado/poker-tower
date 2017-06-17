@@ -1,35 +1,46 @@
+"use strict"
 var ioPoker = io.of("/poker");
 var uuidObj = require("uuid");
-//var event = require("./poker_event_handlers.js");
+
+var event = require("./poker_event_handlers");
+var PokerEntities = require("./poker_entities");
+
+var cardDeck = new PokerEntities.CardDeck();
+cardDeck.create();
 
 var pokerTableList = {};
-var cardDeck = createFrenchDeck();
 var pokerPlayerList = {};
-
-//setTableState(newTable());
 
 ioPoker.on("connection", function(socket){
 	console.log(socket.id + " has connected...");
 	ioPoker.to(socket.id).emit("UPDATE_CLIENT_UUID", socket.id);
 
-	for(table in pokerTableList){
+
+	for(var table in pokerTableList){
 		console.log("sent "+ table);
 		ioPoker.to(socket.id).emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
 	}
 
 	socket.on("REGISTER_TABLE", function(){
-		var table = newTable(10);
-		table.uuid = uuidObj.v4();
-
-		pokerTableList[table.uuid] = table;
-
-		//console.log(pokerTableList);
-		ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table.uuid);
+			let table = new PokerEntities.Table(10, uuidObj.v4());
+			pokerTableList[table.uuid] = table;
+			console.log(table);
+			ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table.uuid);
 	});
 
 	socket.on("JOIN_TABLE", function(playerInfoPack, table_uuid){
-			var socket = this;
-			joinTable(playerInfoPack, table_uuid, socket);
+			let socket = this;
+			let table = pokerTableList[table_uuid];
+
+			let player = new PokerEntities.Player();
+			player.setUUID(socket.id);
+			player.setName(playerInfoPack.name);
+			player.setIcon(playerInfoPack.icon);
+			player.setWealth(playerInfoPack.wealth);
+
+			pokerPlayerList[player.uuid] = table;
+
+			table.join(ioPoker, player, socket);
 	});
 
 	socket.on("PLAYER_RAISE", function(bet_package){
@@ -100,47 +111,21 @@ ioPoker.on("connection", function(socket){
 		}
 	});
 
-
 	socket.on("disconnect", function(){
-		var table_uuid = pokerPlayerList[socket.id];
-		//console.log("pokerlsi "+ pokerPlayerList[socket.id], socket.id);
-		if(table_uuid){ //If the player is part of a table
-			//console.log(pokerTableList[table_uuid].players[socket.id]);
-			socket.to(table_uuid).emit("PLAYER_LEFT", pokerTableList[table_uuid].players[socket.id])
-
-			delete pokerTableList[table_uuid].players[socket.id];
-
-			if(Object.keys(pokerTableList[table_uuid].players).length === 1){
-				resetTable(table_uuid);
+		var table = pokerPlayerList[socket.id];
+		if(table){ //If the player is part of a table
+			socket.to(table.uuid).emit("PLAYER_LEFT", table.players[socket.id])
+			delete table.players[socket.id];
+			if(Object.keys(table.players).length === 1){
+				table.reset(ioPoker);
 			}
-			if(Object.keys(pokerTableList[table_uuid].players).length === 0){
-				delete pokerTableList[table_uuid];
+			if(Object.keys(table.players).length === 0){
+				delete pokerTableList[table.uuid];
 			}
-
 		}
 	});
 
 });
-
-function takeAntes(table){
-	for(player in table.players){
-		var cardPlayer = table.players[player];
-		if(cardPlayer.is_playing === true){
-			var ante = setPlayerWealth(cardPlayer, -table.ante);
-			table.pot += ante;
-			sendUpdatePlayerWealth(table, cardPlayer);
-		}
-	}
-	sendUpdateTablePot(table);
-}
-
-function sendUpdatePlayerWealth(table, player){
-	ioPoker.to(table.uuid).emit("UPDATE_PLAYER_WEALTH", { player:player } );
-}
-
-function sendUpdateTablePot(table){
-	ioPoker.to(table.uuid).emit("UPDATE_TABLE_POT", table.pot);
-}
 
 function checkGameState(table_uuid){
 	if(haveAllPlayersBet(table_uuid)){
@@ -196,26 +181,6 @@ function setAllPlayersProperty(table, property, value, playing_only){
 	}
 }
 
-function dealFlop(table_uuid){
-	var table = pokerTableList[table_uuid];
-	for(var i=0; i<3; i++){
-		ioPoker.in(table_uuid).emit("COMMUNITY_CARD", table.communityCards[table.numOfComCardsOnTable]);
-		table.numOfComCardsOnTable++;
-	}
-}
-
-function dealRiver(table_uuid){
-	var table = pokerTableList[table_uuid];
-	ioPoker.in(table_uuid).emit("COMMUNITY_CARD", table.communityCards[table.numOfComCardsOnTable]);
-	table.numOfComCardsOnTable++;
-}
-
-function dealTurn(table_uuid){
-	var table = pokerTableList[table_uuid];
-	ioPoker.in(table_uuid).emit("COMMUNITY_CARD", table.communityCards[table.numOfComCardsOnTable]);
-	table.numOfComCardsOnTable++;
-}
-
 function haveAllPlayersBet(table_uuid){
 	var cardPlayer = null;
 	var table = pokerTableList[table_uuid];
@@ -230,73 +195,7 @@ function haveAllPlayersBet(table_uuid){
 	return true;
 }
 
-function joinTable(playerInfoPack, table_uuid, socket){
-	var player = NewPlayer();
-	//console.log(socketid+" this");
-	setPlayerName(player, playerInfoPack.name);
-	setPlayerUuid(player, socket.id);
-	setPlayerIcon(player, playerInfoPack.icon);
-	setPlayerWealth(player, playerInfoPack.wealth);
 
-	for(table in pokerTableList){
-		if(table === table_uuid){
-			pokerPlayerList[socket.id] = table_uuid;
-			pokerTableList[table].players[socket.id] = player;
-			socket.join(table_uuid);
-			console.log("Joined " + table);
-			console.log(pokerTableList);
-			socket.to(table_uuid).emit("PLAYER_JOINED", player);
-
-			var playersAtTable = getPlayersAtTable(table_uuid);
-			ioPoker.to(socket.id).emit("JOINED_TABLE", {players: playersAtTable, uuid: table} );
-
-			if(pokerTableList[table_uuid].game_started === false){
-				if(Object.keys(pokerTableList[table_uuid].players).length > 1){
-					setTableState(pokerTableList[table_uuid]);
-					sendPlayersCards(table_uuid);
-					checkGameState(table_uuid);
-				}
-			}
-			else if(pokerTableList[table_uuid].game_started === true){
-				if(Object.keys(pokerTableList[table_uuid].players).length > 1){
-					ioPoker.to(socket.id).emit("CARD_HAND", {clientHand: [], currentHandPlayers: getPlayersAtTable(table_uuid)} );
-				}
-			}
-		}
-	}
-}
-
-
-function resetTable(table_uuid){
-	var table = pokerTableList[table_uuid];
-	table.communityCards = [];
-	table.game_started = false;
-	table.numOfComCardsOnTable = 0;
-	table.lastRaiseAmount = 0;
-	table.pot = 0;
-	for(player in table.players){
-		table.players[player].is_playing = false;
-		table.players[player].cardsInHand = [];
-	}
-	ioPoker.to(table_uuid).emit("RESET_RENDERED_GAME_OBJECTS");
-	//console.log( pokerTableList[table_uuid] );
-}
-
-function newTable(ante){
-	var table = {
-		ante: null,
-		communityCards: [],
-		game_started: false,
-		lastRaiseAmount: 0,
-		numOfComCardsOnTable: 0,
-		players: {}, // total people at table
-		pot: 0,
-		uuid: null,
-		waitOnBetFrom: null,
-	}
-	table.ante = ante;
-	return table;
-}
 
 function sendPlayersCards(table_uuid){
 	var table = pokerTableList[table_uuid];
@@ -339,24 +238,6 @@ function setTableState(table){
 	//console.log(drawnCardList);
 }
 
-function NewPlayer(name, uuid){
-	var player = {
-		atTable: null,
-		cardsInHand: [],
-		wealth: null,
-		icon: null,
-		is_playing: false,
-		name: null,
-		placed_bet: false,
-		totalBet: 0,
-		uuid: null,
-	}
-	player.name = name || "anonymous";
-	player.uuid = uuid;
-
-	return player;
-}
-
 function allPlayingHand(table_uuid){// No handInfo
 	var table = pokerTableList[table_uuid];
 	console.log(table, pokerTableList);
@@ -371,78 +252,8 @@ function allPlayingHand(table_uuid){// No handInfo
 	return allPlayingHand;
 }
 
-function getPlayersAtTable(table_uuid, player_uuid){ //No handInfo
-	var table = pokerTableList[table_uuid];
-	var requestedPlayers = {};
-	if(player_uuid){
-		var cardPlayer = Object.assign({}, table.players[player]);
-		cardPlayer.cardsInHand = [];
-		return cardPlayer;
-	}
-	else{
-		for(player in pokerTableList[table_uuid].players){
-			var cardPlayer = Object.assign({}, table.players[player]);
-			cardPlayer.cardsInHand = [];
-			requestedPlayers[player] = cardPlayer;
-		}
-		return requestedPlayers;
-	}
-}
 
-
-
-function setPlayerName(player, name){
-	player.name = name;
-}
-
-function setPlayerUuid(player, uuid){
-	player.uuid = uuid;
-}
-
-function setPlayerIcon(player, icon){
-	player.icon = icon + ".jpg";
-}
-
-function setPlayerWealth(player, change){ //Sets a player's wealth. returns the absolute value of player's wealth change. Cannot subtruct more than player's wealth.
-	var amountRemovedFromPlayer = null;
-	console.log(player.uuid+" this change "+change);
-	if(change<0){
-		if(player.wealth+change < 0){
-			amountRemovedFromPlayer = player.wealth;
-			player.wealth = 0;
-			return amountRemovedFromPlayer;
-		}
-		else{
-			player.wealth += change;
-			return -change;
-		}
-	}
-	else{
-		player.wealth+=change;
-		return change;
-	}
-}
 
 function findTable(table_uuid){
 
-}
-
-function createFrenchDeck(options){
-	var SUITS = [0,1,2,3] // hearts diamonds clubs spades
-	var deckOfCards = [];
-	for(var suit=0; suit<SUITS.length; suit++){
-		for(var cardValue=0; cardValue<13; cardValue++){//A=2 K=13
-			deckOfCards.push( new Card(SUITS[suit], cardValue+2) );
-		}
-	}
-	if(!options === "NO_JOKER"){
-		//throw some jokers in deckOfCards
-	}
-	return deckOfCards;
-}
-
-function Card(suit, value){
-	this.SUIT = suit;
-	this.VALUE = value;
-	this.FACE_DOWN = true;
 }

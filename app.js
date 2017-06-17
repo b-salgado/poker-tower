@@ -1,3 +1,5 @@
+"use strict"
+
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);/* Enabling Server(app) is neccessary for socket.io attachment */
@@ -8,7 +10,11 @@ var handleBars = require("express-handlebars").create({defaultLayout:"main"});
 
 var pokerSocketEngine = require("./poker_socket_engine.js");
 
-var pokerIcons = [0,1,2,3,4,5,6,7,8];
+var pokerIcons = [];
+
+for(var i=0; i<9; i++){
+	pokerIcons.push(i+".jpg");
+}
 
 app.set("port", process.env.PORT || 4000);
 

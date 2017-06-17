@@ -42,7 +42,7 @@ define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
           break;
         case "RESET_INPUTBOX":
           GUI.resetInputbox();
-          break;
+          break;allIconRadioButtons
         case "RESET_RENDERED_GAME_OBJECTS":
           GUI.resetRenderedGameObjects();
           break;

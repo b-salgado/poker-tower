@@ -24,12 +24,13 @@ define(function(){
       }
 
       this.joinTable = function(table_uuid){ //table to join, player to join
-        var allPlayerIcons = document.getElementsByClassName("poker-icon-sel-radio-button");
+        var allIconRadioButtons = document.getElementsByClassName("poker-icon-sel-radio-button");
         pgm.playerClient.name = document.getElementById("poker-splash-input-player-name").value.trim();
         console.log(pgm.playerClient.name.length);
-        for(var icon=0; icon<allPlayerIcons.length; icon++){
-          if(allPlayerIcons[icon].checked && pgm.playerClient.name.length !==0){
-            pgm.playerClient.icon = String(icon);
+        for(var icon=0; icon<allIconRadioButtons.length; icon++){
+          if(allIconRadioButtons[icon].checked && pgm.playerClient.name.length !==0){
+            let iconNameIndex = allIconRadioButtons[icon].previousElementSibling.src.lastIndexOf("/");
+            pgm.playerClient.icon = allIconRadioButtons[icon].previousElementSibling.src.slice(iconNameIndex);
 
             socket.emit("JOIN_TABLE", pgm.playerClient, table_uuid);
             return 0;
