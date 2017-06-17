@@ -24,28 +24,30 @@ const PokerEntities = {
     this.wealth = null;
   },
 
-  Table: function(ante, uuid){
+  Table: function(ante, cardDeck, uuid){
     this.ante = ante;
+    this.cardDeck = cardDeck;
     this.communityCards = [];
-  	this.game_started = false;
-  	this.lastRaiseAmount = 0;
-  	this.numOfComCardsOnTable = 0;
-  	this.players = {}, // total people at table
-  	this.pot = 0;
-  	this.uuid = uuid;
-  	this.waitOnBetFrom = null;
+    this.game_started = false;
+    this.lastRaiseAmount = 0;
+    this.numOfComCardsOnTable = 0;
+    this.numOfPlayers = 0;
+    this.initNumOfPlayers = -1; // Not waiting on any players to begin
+    this.players = {}, // all player objects at table
+    this.pot = 0;
+    this.uuid = uuid;
+    this.waitOnBetFrom = null;
   }
 
 }
 
 /*=====Player Prototypes======*/
-console.log(PokerEntities);
 PokerEntities.Player.prototype.payBets = function(amount){
   if(this.wealth-amount < 0){
     let amountPaid = this.wealth;
+    this.wealth = 0;
     return amountPaid;
   }else{
-    this.wealth = 0;
     this.wealth -= amount;
     return amount;
   }
@@ -57,40 +59,72 @@ PokerEntities.Player.prototype.setWealth = function(amount){this.wealth = amount
 PokerEntities.Player.prototype.receivesPayout = function(amount){this.weath+=amount};
 
 /*=======Table Prototypes========*/
-PokerEntities.Table.prototype.reset = function(io){
-	this.communityCards = [];
-	this.game_started = false;
-	this.numOfComCardsOnTable = 0;
-	this.lastRaiseAmount = 0;
-	this.pot = 0;
-	for(var player in this.players){
-		this.players[player].is_playing = false;
-		this.players[player].cardsInHand = [];
-	}
-	io.to(this.uuid).emit("RESET_RENDERED_GAME_OBJECTS");
-}
 
 PokerEntities.Table.prototype.addPlayer = function(player){
   console.log(player);
   this.players[player.uuid] = player;
+  this.numOfPlayers++;
+}
+
+PokerEntities.Table.prototype.allPlayersBet_TF = function(io){
+  var cardPlayer = null;
+  for(var player in this.players){
+    cardPlayer = this.players[player];
+    if(cardPlayer.is_playing && !cardPlayer.placed_bet){
+      io.to(cardPlayer.uuid).emit("ALERT_PLAYER_BET");
+      this.waitOnBetFrom = cardPlayer.uuid;
+      return false;
+    }
+  }
+  return true;
+}
+
+PokerEntities.Table.prototype.beginGameRound = function(io){
+  this.game_started = true;
+  var drawnCardList = [];
+
+  this.dealPlayers(drawnCardList);
+  this.storeCommunityCards(drawnCardList);
+
+  console.log(this)
+  this.collectAntes(io);
 }
 
 PokerEntities.Table.prototype.collectAntes = function(io){
-	for(player in this.players){
-		const cardPlayer = this.players[player];
-		if(cardPlayer.is_playing === true){
-			const ante = cardPlayer.payBets(this.ante);
-			this.pot += ante;
-			io.to(this.uuid).emit("UPDATE_PLAYER_WEALTH", { player:player } );
-		}
-	}
-	io.to(table.uuid).emit("UPDATE_TABLE_POT", this.pot);
+  var cardPlayer = null;
+  var ante = null;
+  for(var player in this.players){
+    cardPlayer = this.players[player];
+    if(cardPlayer.is_playing === true){
+      ante = cardPlayer.payBets(this.ante);
+      this.pot += ante;
+      io.to(this.uuid).emit("UPDATE_PLAYER_WEALTH", { player:this.washHand(cardPlayer) } );
+    }
+  }
+  io.to(this.uuid).emit("UPDATE_TABLE_POT", this.pot);
 }
 
 PokerEntities.Table.prototype.dealFlop = function(io){
   for(var i=0; i<3; i++){
     io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
     this.numOfComCardsOnTable++;
+  }
+}
+
+PokerEntities.Table.prototype.dealPlayers = function(drawnCardList){
+  var card = null;
+  var cardPlayer = null;
+  for(var player in this.players){//deal players
+    cardPlayer = this.players[player];
+    cardPlayer.is_playing = true;
+    while(cardPlayer.cardsInHand.length < 2){
+    card = Math.floor( Math.random() * 52 );
+    while(drawnCardList[card] === true){
+      card = Math.floor( Math.random() * 52 );
+    }
+    drawnCardList[card] = true;
+    this.players[player].cardsInHand.push(this.cardDeck[card]);
+    }
   }
 }
 
@@ -104,22 +138,22 @@ PokerEntities.Table.prototype.dealTurn = function(io){
   this.numOfComCardsOnTable++;
 }
 
-PokerEntities.Table.prototype.getPlayersAtTable = function(player_uuid){ //No handInfo
-	var requestedPlayers = {};
+PokerEntities.Table.prototype.getPlayers = function(player_uuid){ //No handInfo
+  var requestedPlayers = {};
   console.log(this);
-	if(player_uuid){
-		let cardPlayer = Object.assign({}, this.players[player]);
-		cardPlayer.cardsInHand = [];
-		return cardPlayer;
-	}
-	else{
-		for(var player in this.players){
-			let cardPlayer = Object.assign({}, this.players[player]);
-			cardPlayer.cardsInHand = [];
-			requestedPlayers[player] = cardPlayer;
-		}
-		return requestedPlayers;
-	}
+  if(player_uuid){
+    let cardPlayer = Object.assign({}, this.players[player]);
+    cardPlayer.cardsInHand = [];
+    return cardPlayer;
+  }
+  else{
+    for(var player in this.players){
+      let cardPlayer = Object.assign({}, this.players[player]);
+      cardPlayer.cardsInHand = [];
+      requestedPlayers[player] = cardPlayer;
+    }
+    return requestedPlayers;
+  }
 }
 
 PokerEntities.Table.prototype.join = function(io, player, socket){
@@ -132,22 +166,54 @@ PokerEntities.Table.prototype.join = function(io, player, socket){
 
   socket.to(this.uuid).emit("PLAYER_JOINED", player);
 
-  io.to(socket.id).emit("JOINED_TABLE", { players:self.getPlayersAtTable(), uuid: self.uuid });
-  console.log(self.getPlayersAtTable, self.uuid);
+  io.to(socket.id).emit("JOINED_TABLE", { players:self.getPlayers(), uuid: self.uuid });
 }
 
-PokerEntities.Table.prototype.haveAllPlayersBet = function(io){
-  let cardPlayer = null;
-	for(var player in this.players){
-		cardPlayer = this.players[player];
-		if(cardPlayer.is_playing && !cardPlayer.placed_bet){
-			io.to(cardPlayer.uuid).emit("ALERT_PLAYER_BET");
-			this.waitOnBetFrom = cardPlayer.uuid;
-			return false;
-		}
-	}
-	return true;
+PokerEntities.Table.prototype.leave = function(io, socket){
+  socket.to(this.uuid).emit("PLAYER_LEFT", this.players[socket.id])
+  delete this.players[socket.id];
+  this.numOfPlayers--;
+  if(this.numOfPlayers === 1){
+    //this.payout
+    this.reset(io);
+    return false;
+  }
+  if(this.numOfPlayers === 0){
+    return true;
+  }
 }
+
+PokerEntities.Table.prototype.reset = function(io){
+  this.communityCards = [];
+  this.game_started = false;
+  this.numOfComCardsOnTable = 0;
+  this.numOfPlayers = 0;
+  this.lastRaiseAmount = 0;
+  this.pot = 0;
+  for(var player in this.players){
+    this.players[player].is_playing = false;
+    this.players[player].cardsInHand = [];
+  }
+  io.to(this.uuid).emit("RESET_RENDERED_GAME_OBJECTS");
+}
+
+PokerEntities.Table.prototype.storeCommunityCards = function(drawnCardList){
+  var card = null;
+  for(var cards=0; cards<5; cards++){
+    card = Math.floor( Math.random() * 52 );
+    while(drawnCardList[card] === true){
+      card = Math.floor( Math.random() * 52 );
+    }
+    drawnCardList[card] = true;
+    this.communityCards.push(this.cardDeck[card]);
+  }
+}
+
+PokerEntities.Table.prototype.washHand = function(player){
+  let cardPlayer = Object.assign({}, player);
+  cardPlayer.cardsInHand = [];
+  return cardPlayer;
+};
 
 /*=========Card Prototypes========*/
 PokerEntities.CardDeck.prototype.create = function(){

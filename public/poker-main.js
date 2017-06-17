@@ -1,6 +1,6 @@
 "use strict";
 require(["poker_mod_conf.js"], function(){
-  require(["GUI","Input","PlayingCardsEngine","PlayingCardsSocketEngine","PokerGameManager"], function(GUI, Input, CardGame, PlayingCardsSocketEngine, PokerGameManager){
+  require(["GUI","Input","PlayingCardsSocketEngine","PokerGameManager"], function(GUI, Input, PlayingCardsSocketEngine, PokerGameManager){
     window.onLoad = pokerMain();
 
     function pokerMain(){

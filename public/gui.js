@@ -167,7 +167,7 @@ define(function(){
     },
 
     drawPlayersCards: function(){
-      for(player in this.playersAtTable){
+      for(var player in this.playersAtTable){
         if( !(player === this.client_uuid) ){
           var cardsInHand = [];
           var cardPadding = 5;
@@ -196,7 +196,7 @@ define(function(){
 
     updateCardHand: function(game_state_pkg){
       var currentHandPlayers = game_state_pkg.currentHandPlayers;
-      for(player in currentHandPlayers){
+      for(var player in currentHandPlayers){
         if( !(currentHandPlayers[player].uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
           this.playersAtTable[player].playerInfo.is_playing = true;
           this.playersAtTable[player].playerInfo.cardsInHand = [];

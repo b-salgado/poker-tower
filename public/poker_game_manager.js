@@ -1,4 +1,5 @@
-define(["PlayingCardsEngine","GUI"], function(CardGame, GUI){
+"use strict"
+define(["GUI"], function(GUI){
   return{
     cardDeck: null,
     client_uuid: null,

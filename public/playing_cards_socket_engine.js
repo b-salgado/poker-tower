@@ -1,3 +1,4 @@
+"use strict"
 define(function(){
   return{
     socket: null,
@@ -52,7 +53,7 @@ define(function(){
         console.log(table_info_pack);
         pgm.updateGUI( {"e":"REMOVE_SPLASH_SCREEN"} );
         pgm.updateGUI( {e:"UPDATE_TABLE_UUID", table_uuid:table_info_pack.uuid} );
-        for(player in table_info_pack.players){
+        for(var player in table_info_pack.players){
           pgm.updateGUI( {e:"ADD_PLAYER", player:table_info_pack.players[player]} );
         }
       });

@@ -1,3 +1,4 @@
+"use strict"
 define(["PokerGameManager"], function(pgm){
   return{
     init: function(){

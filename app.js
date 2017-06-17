@@ -13,7 +13,7 @@ var pokerSocketEngine = require("./poker_socket_engine.js");
 var pokerIcons = [];
 
 for(var i=0; i<9; i++){
-	pokerIcons.push(i+".jpg");
+  pokerIcons.push(i+".jpg");
 }
 
 app.set("port", process.env.PORT || 4000);
@@ -24,17 +24,17 @@ app.set("view engine", "handlebars");
 //Middlewear
 app.use(express.static(__dirname + "/public"));
 app.use(function(req, res, next){
-	if(!res.locals.partials){
-		res.locals.partials = {};
-	}
-	res.locals.partials.pokerIcons = pokerIcons;
-	next();
+  if(!res.locals.partials){
+    res.locals.partials = {};
+  }
+  res.locals.partials.pokerIcons = pokerIcons;
+  next();
 });
 
 app.get("/", function(req, res){
-	res.render("poker");
+  res.render("poker");
 });
 
 http.listen(4000, function(){
-	console.log("Listening on port:" + 4000);
+  console.log("Listening on port:" + 4000);
 });
