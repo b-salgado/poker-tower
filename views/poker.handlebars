@@ -3,70 +3,80 @@
 <script src="lib/require.js"></script>
 <script src="poker-main.js"></script>
 
-<div class="poker-splash-screen" id="poker-splash-screen">
+<div class="pk-splash-screen-compatibility-overlay">
+  <label class="pk-splash-screen-not-supported"> Sorry! Your device is not yet Supported =[ </label>
+  <label class="pk-splash-screen-not-landscape"> Width too Narrow!<br>Try turning your device or increasing the width!</label>
+ </div>
+<div class="pk-splash-screen" id="poker-splash-screen">
 
-  <form class="poker-icon-sel-form">
-    <h2 class="poker-icon-sel-form-header">Choose Your Icon:</h2>
-    {{#each partials.pokerIcons}}
-      <div class="poker-icon-sel-individual-container">
-        <img class="poker-icon-radio-button-img" src="./assets/player_icons/{{this}}"></img>
-        <input type="radio" name="poker-icon-selection" class="poker-icon-sel-radio-button">
+  <h1 class="pk-splash-screen-game-title">Poker Tower</h1>
+
+  <div class="pk-splash-screen-gen-top">
+    <form class="pk-splash-player-profile-form">
+      <div class="pkss-player-current-profile">
+        <div class="pk-splash-player-profile-label">Current Player Profile:</div>
+        <img class="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
+        <span>
+          <label>Name</label>
+          <label>$Wealth</label>
+        <span>
       </div>
-    {{/each}}
-  </form>
+      Enter Name:<input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
+        <div class="pkss-icon-sel-cntr">
+          {{#each partials.pokerIcons}}
+            <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
+          {{/each}}
+        </div>
+    </form>
+    <form class="pk-splash-player-profile-form">
+      <label class="pk-splash-player-profile-label">Create a table:</label>
+      # Players:<input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
+      <button type="button" id="poker-splash-screen-create-table-button">Click to Create Table</button>
+    </form>
+  </div>
 
-  <div class="poker-splash-screen-gen-inferface">
-
-    <div class="poker-splash-screen-gen-top">
-      <h1 class="poker-splash-screen-game-title">Poker Pond</h1>
-      <form class="poker-splash-screen-player-profile">
-        Enter Name: <br>
-        <input class="poker-splash-input-player-name" id="poker-splash-input-player-name" value="">
-      </form>
-    </div>
-
-    <div class="poker-splash-screen-gen-bottom">
+<!--
+  <div class="pk-splash-screen-gen-bottom">
+    <div class="pk-splash-screen-gen-bottom">
       <form class="center-items poker-splash-screen-create-table">
-        <button type="button" id="poker-splash-screen-create-table-button">Click to Create Table</button>
       </form>
-      <div class="poker-splash-screen-current-tables" id="poker-splash-screen-current-tables">
-        <!-- Dynamically Set Using ws and Templates-->
+      <div class="pk-splash-screen-current-tables" id="poker-splash-screen-current-tables">
       </div>
     </div>
 
   </div>
-
+--->
 
 
 </div>
 
-<div class="poker-players-container-top" id="poker-players-container-top"></div>
+<div class="pk-players-container-top" id="poker-players-container-top"></div>
 
-<div class="poker-room-uuid-container">
-  <label class="poker-room-uuid scalable-text" id="poker-room-uuid">Not in Room</label>
+<div class="pk-room-uuid-container">
+  <label class="pk-room-uuid scalable-text" id="poker-room-uuid">Not in Room</label>
 </div>
 
-<div class="poker-room-pot-container">
-  <label class="poker-room-pot scalable-text" id="poker-room-pot">0 ₪</label>
+<div class="pk-room-pot-container">
+  <label class="pk-room-pot scalable-text" id="poker-room-pot">0 ₪</label>
 </div>
 
-<div class="poker-players-container-bottom">
-  <div class="poker-player-client" id="player0">
-    <img class="poker-player-icon" src=""></img>
-    <span class="poker-player-stat-container">
-      <div class="poker-player-name-container">
+<div class="pk-players-container-bottom">
+  <div class="pk-player-client" id="player0">
+    <img class="pk-player-icon" src=""></img>
+    <span class="pk-player-stat-container">
+      <div class="pk-player-name-container">
         <label class="scalable-text poker-player-name"></label>
       </div>
-      <div class="poker-player-wealth-container">
+      <div class="pk-player-wealth-container">
         <label class="scalable-text poker-player-wealth">0 ₪</label>
       </div>
     </span>
-    <span class="poker-actions-container">
-      <input id="poker-inputbox" class="poker-gui-bet-char-input"></input>
-      <button class="poker-action" id="poker-call">CALL</botton>
-      <button class="poker-action" id="poker-raise">RAISE</botton>
-      <button class="poker-action" id="poker-fold">FOLD</botton>
-      <button class="poker-action" id="poker-chat">CHAT</botton>
+    <span class="pk-actions-container">
+      <input id="poker-inputbox" class="pk-gui-bet-char-input"></input>
+      <button class="pk-action" id="poker-call">CALL</botton>
+      <button class="pk-action" id="poker-raise">RAISE</botton>
+      <button class="pk-action" id="poker-fold">FOLD</botton>
+      <button class="pk-action" id="poker-chat">CHAT</botton>
     </span>
   </div>
 </div>
