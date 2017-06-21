@@ -3,25 +3,26 @@
 <script src="lib/require.js"></script>
 <script src="poker-main.js"></script>
 
-<div class="pk-splash-screen-compatibility-overlay">
-  <label class="pk-splash-screen-not-supported"> Sorry! Your device is not yet Supported =[ </label>
-  <label class="pk-splash-screen-not-landscape"> Width too Narrow!<br>Try turning your device or increasing the width!</label>
- </div>
+<div class="pkss-compatibility-overlay">
+  <label class="pkss-not-supported">Sorry! Your device is not yet Supported =[</label>
+  <label class="pkss-not-landscape">Display width too Narrow!<br>Try turning your device <br> or increasing the width!</label>
+</div>
+
 <div class="pk-splash-screen" id="poker-splash-screen">
 
   <h1 class="pk-splash-screen-game-title">Poker Tower</h1>
 
-  <div class="pk-splash-screen-gen-top">
+  <div class="pkss-gen-top">
     <form class="pk-splash-player-profile-form">
       <div class="pkss-player-current-profile">
-        <div class="pk-splash-player-profile-label">Current Player Profile:</div>
+        <h3 class="pk-splash-player-profile-label">Current Player Profile:</h3>
         <img class="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
         <span>
-          <label>Name</label>
-          <label>$Wealth</label>
+          <h3>Name</h3>
+          <h3>$Wealth</h3>
         <span>
       </div>
-      Enter Name:<input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
+      <input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
         <div class="pkss-icon-sel-cntr">
           {{#each partials.pokerIcons}}
             <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
@@ -30,12 +31,12 @@
     </form>
     <form class="pk-splash-player-profile-form">
       <label class="pk-splash-player-profile-label">Create a table:</label>
-      # Players:<input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
+      <input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
       <button type="button" id="poker-splash-screen-create-table-button">Click to Create Table</button>
     </form>
   </div>
 
-<!--
+
   <div class="pk-splash-screen-gen-bottom">
     <div class="pk-splash-screen-gen-bottom">
       <form class="center-items poker-splash-screen-create-table">
@@ -45,7 +46,6 @@
     </div>
 
   </div>
---->
 
 
 </div>

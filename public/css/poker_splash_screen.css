@@ -1,0 +1,40 @@
+@keyframes textfadein {
+  0% {
+    color: transparent; }
+  100% {
+    color: #000000; } }
+
+button, h1, h2, h3, label {
+  font-family: monospace; }
+
+@media (orientation: portrait) {
+  .pkss-compatibility-overlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0px;
+    top: 0px;
+    z-index: 12;
+    background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
+    width: 100vw;
+    height: 100vh; }
+    .pkss-compatibility-overlay .pkss-not-landscape {
+      animation: textfadein 2s;
+      font-weight: bold;
+      text-align: center;
+      font-size: 2em; }
+    .pkss-compatibility-overlay .pkss-not-supported {
+      display: none; } }
+
+.pk-splash-screen {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  top: 0vh;
+  left: 0vw;
+  z-index: 8;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: scroll; }

@@ -13,48 +13,6 @@ body, html{
 }
 
 /*======Splash Screen========*/
-
-.pk-splash-screen-compatibility-overlay,
-.pk-splash-screen{
-  background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
-}
-.pk-splash-screen-compatibility-overlay{
-  position: absolute;
-  display: hidden;
-  justify-content: center; /*y axis*/
-  align-items: center; /*x axis*/
-  left: 0px;
-  top: 0px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 12;
-  text-align: center;
-}
-.pk-splash-screen-not-supported,
-.pk-splash-screen-not-landscape{
-  font-size: 2em;
-}
-
-@media (max-width: 767px) and (orientation: landscape){
-  .pk-splash-screen-compatibility-overlay{
-      display: flex;
-  }
-  .pk-splash-screen-not-landscape{
-      font-size: 0px;
-  }
-}
-
-@media (orientation: portrait){
-  .pk-splash-screen-compatibility-overlay{
-      display: flex;
-  }
-  .pk-splash-screen-not-supported{
-      font-size: 0px;
-  }
-}
-   .pk-splash-screen-compatibility-overlay{
-    display: none;
-  }
   .pk-splash-screen{
     position: absolute;
     top: 0vh;
@@ -90,7 +48,7 @@ body, html{
     font-weight: bold;
   }
   .pkss-player-current-profile{
-    height: 200px;
+    height: 200px
   }
   .pk-splash-input-player-name{
     width: 30%;
