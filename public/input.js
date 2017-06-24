@@ -17,7 +17,7 @@ define(["PokerGameManager"], function(pgm){
     })},
 
     addEvtListeners:function(){
-      document.getElementById("poker-splash-screen-create-table-button").addEventListener("click", function(e){
+      document.getElementById("pkss-create-table-button").addEventListener("click", function(e){
         pgm.THPSocket.registerTableOnline();
       });
 

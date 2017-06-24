@@ -292,7 +292,8 @@ define(function(){
     },
 
     SplashScreenTableTemplate: function(tableInfoPack){
-      return `<div class="center-items poker-splash-screen-table-element" id=`+tableInfoPack.table_uuid+`></div>`
+      return `
+      <div class="center-items poker-splash-screen-table-element" id=`+tableInfoPack.table_uuid+`></div>`
     }
 
 

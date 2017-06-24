@@ -11,10 +11,6 @@ body, html{
 	width	:100%;
 	overflow:hidden;
 }
-
-/*======Splash Screen========*/
-
-
 /*--------*/
   .pk-splash-screen-gen-bottom{
     position: relative;
@@ -62,16 +58,6 @@ body, html{
   align-content: ;
 }
 
-.pk-icon-radio-button-img{
-  width: 128px;
-  height: 128px;
-}
-
-.pk-icon-sel-radio-button{
-  display: block;
-  width: 24px;
-  height:24px;
-}
 
 /*=======================================*/
 

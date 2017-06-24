@@ -77,7 +77,10 @@ button, h1, h2, h3, input, label{
           }
         }
       }
-      .pkss-change-profile-settings-button:focus{
+      button{
+        height: 35px;
+      }
+      button:focus{
         //background-color: red;
       }
     }
@@ -110,11 +113,22 @@ button, h1, h2, h3, input, label{
       display: flex;
       flex-direction: column;
       flex: 1;
+      justify-content: space-between;
       border-radius: 0% 5% 0% 0%;
       background-color: rgba(0,0,0,0.2);
       .pkss-table-header{
         text-align: left;
         margin: 2% 2% 2% 5%;
+      }
+      label{
+        margin: 0% 0% 0% 5%;
+        font-size: 1.1em;
+      }
+      input{
+        height: 20px;
+      }
+      button{
+        height: 35px;
       }
     }
   }
