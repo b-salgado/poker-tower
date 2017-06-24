@@ -4,7 +4,7 @@
   100% {
     color: #000000; } }
 
-button, h1, h2, h3, label {
+button, h1, h2, h3, input, label {
   font-family: monospace; }
 
 @media (orientation: portrait) {
@@ -37,4 +37,64 @@ button, h1, h2, h3, label {
   z-index: 8;
   width: 100vw;
   height: 100vh;
+  background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
   overflow-y: scroll; }
+  .pk-splash-screen .pkss-game-title {
+    margin: 1%; }
+  .pk-splash-screen .pkss-gen-top {
+    display: flex;
+    flex-direction: row;
+    width: 800px; }
+    .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 5% 0% 0% 0%;
+      background-color: rgba(0, 0, 0, 0.2); }
+      .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr {
+        height: 170px; }
+        .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-label {
+          text-align: right;
+          margin: 2% 5% 2% 2%; }
+        .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-icon {
+          width: 128px;
+          height: 128px;
+          border-radius: 50% 50% 50% 0%;
+          box-shadow: inset 0 0 1em gold, 0 0 1em red;
+          margin: 0 0 0 2%; }
+        .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr {
+          position: absolute;
+          margin: 0 0 0 3%; }
+          .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr #pkss-current-profile-name, .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr #pkss-current-profile-wealth {
+            margin: 30px 0;
+            text-align: right;
+            box-shadow: inset 0 0 3em crimson, 0 0 1em red; }
+    .pk-splash-screen .pkss-gen-top .pkss-change-profile-settings-ctnr {
+      left: 37vw;
+      top: 250px;
+      width: 288px;
+      z-index: 64;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.2); }
+      .pk-splash-screen .pkss-gen-top .pkss-change-profile-settings-ctnr .pkss-icon-sel-cntr {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap; }
+        .pk-splash-screen .pkss-gen-top .pkss-change-profile-settings-ctnr .pkss-icon-sel-cntr .pkss-icon-sel-img {
+          flex: 1;
+          max-width: 96px;
+          max-height: 96px;
+          flex-grow: 1;
+          flex-shrink: 1; }
+    .pk-splash-screen .pkss-gen-top .pkss-change-profile-settings-ctnr-closed {
+      display: none;
+      height: 0vh; }
+    .pk-splash-screen .pkss-gen-top .pkss-register-table-form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 0% 5% 0% 0%;
+      background-color: rgba(0, 0, 0, 0.2); }
+      .pk-splash-screen .pkss-gen-top .pkss-register-table-form .pkss-table-header {
+        text-align: left;
+        margin: 2% 2% 2% 5%; }

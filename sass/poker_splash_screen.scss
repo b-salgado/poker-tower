@@ -1,12 +1,13 @@
 $linear-background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
 $default-text-color: #000000;
+$icon-sel-sq-side-px: 96px;
 
 @keyframes textfadein {
   0% { color: rgba(0,0,0,0.0) }
   100% { color: $default-text-color }
 }
 
-button, h1, h2, h3, label{
+button, h1, h2, h3, input, label{
   font-family: monospace;}
 
 @media (orientation: portrait){
@@ -38,5 +39,84 @@ button, h1, h2, h3, label{
 	flex-direction: column;
 	top: 0vh; left: 0vw;	z-index: 8;
 	width: 100vw; height: 100vh;
+	background: $linear-background;
 	overflow-y: scroll;
+  .pkss-game-title{
+    margin: 1%;
+  }
+  .pkss-gen-top{
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+    .pkss-player-profile-settings-cntr{
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 5% 0% 0% 0%;
+      background-color: rgba(0,0,0,0.2);
+      .pkss-player-current-profile-cntr{
+        //width: 100%;\
+        height: 170px;
+        .pkss-current-profile-label{
+          text-align: right;
+          margin: 2% 5% 2% 2%;
+        }
+        .pkss-current-profile-icon{
+          width: 128px; height: 128px;
+          border-radius: 50% 50% 50% 0%;
+          box-shadow: inset 0 0 1em gold, 0 0 1em red;
+          margin: 0 0 0 2%;
+        }
+        .pkss-current-profile-stat-ctnr{
+          position: absolute;
+          margin: 0 0 0 3%;
+          #pkss-current-profile-name, #pkss-current-profile-wealth{
+            margin: 30px 0;
+            text-align: right;
+            box-shadow: inset 0 0 3em crimson, 0 0 1em red;
+          }
+        }
+      }
+      .pkss-change-profile-settings-button:focus{
+        //background-color: red;
+      }
+    }
+    .pkss-change-profile-settings-ctnr{
+      left: 37vw; top: 250px;
+
+      width: $icon-sel-sq-side-px * 3; z-index:64;
+      position: absolute;
+      background-color: rgba(0,0,0,0.2);
+      .pkss-input-player-name{}
+      .pkss-icon-sel-cntr{
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        .pkss-icon-sel-img{
+          flex: 1;
+          max-width: $icon-sel-sq-side-px;
+          max-height: $icon-sel-sq-side-px;
+          flex-grow: 1;
+          flex-shrink: 1;
+        }
+      }
+    }
+    .pkss-change-profile-settings-ctnr-closed{
+      display: none;
+      height: 0vh;
+    }
+
+    .pkss-register-table-form{
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 0% 5% 0% 0%;
+      background-color: rgba(0,0,0,0.2);
+      .pkss-table-header{
+        text-align: left;
+        margin: 2% 2% 2% 5%;
+      }
+    }
+  }
+
 }

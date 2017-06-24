@@ -10,30 +10,40 @@
 
 <div class="pk-splash-screen" id="poker-splash-screen">
 
-  <h1 class="pk-splash-screen-game-title">Poker Tower</h1>
+  <h1 class="pkss-game-title">Poker Tower</h1>
 
   <div class="pkss-gen-top">
-    <form class="pk-splash-player-profile-form">
-      <div class="pkss-player-current-profile">
-        <h3 class="pk-splash-player-profile-label">Current Player Profile:</h3>
+
+    <div class="pkss-player-profile-settings-cntr">
+      <div class="pkss-player-current-profile-cntr">
+        <h3 class="pkss-current-profile-label">Current Player Profile</h3>
         <img class="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
-        <span>
-          <h3>Name</h3>
-          <h3>$Wealth</h3>
-        <span>
+        <span class="pkss-current-profile-stat-ctnr">
+          <h3 id="pkss-current-profile-name">Name Namerous</h3>
+          <h3 id="pkss-current-profile-wealth">$Wealth</h3>
+        </span>
       </div>
-      <input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
-        <div class="pkss-icon-sel-cntr">
-          {{#each partials.pokerIcons}}
-            <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
-          {{/each}}
-        </div>
+
+      <button id="pkss-change-profile-settings-button" class="pkss-change-profile-settings-button" type="button">Change Profile Settings</button>
+    </div>
+
+    <form id="pkss-change-profile-settings-ctnr" class="pkss-change-profile-settings-ctnr pkss-change-profile-settings-ctnr-closed">
+      <label>name:<input id="poker-splash-input-player-name" value=""></label>
+      <div class="pkss-icon-sel-cntr">
+        {{#each partials.pokerIcons}}
+        <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
+        {{/each}}
+      </div>
     </form>
-    <form class="pk-splash-player-profile-form">
-      <label class="pk-splash-player-profile-label">Create a table:</label>
-      <input class="pk-splash-input-player-name" id="poker-splash-input-player-name" value="">
+
+    <form class="pkss-register-table-form">
+      <h3 class="pkss-table-header">Create a table</h3>
+      <label>Table Name <input class="pkss-table-ante" id="pkss-table-ante" value=""></label>
+      <label>Table Ante <input class="pkss-table-ante" id="pkss-table-ante" value=""></label>
+      <label>#Players <input class="pkss-table-ante" id="pkss-table-ante" type="number"></label>
       <button type="button" id="poker-splash-screen-create-table-button">Click to Create Table</button>
     </form>
+
   </div>
 
 

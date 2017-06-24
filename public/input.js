@@ -3,9 +3,20 @@ define(["PokerGameManager"], function(pgm){
   return{
     init: function(){
       this.addEvtListeners();
+      this.activateSplashScreenInteractivity();
     },
 
-    addEvtListeners(){
+    activateSplashScreenInteractivity:function(){
+      this.activateChangePlayerProfileButton();
+    },
+
+    activateChangePlayerProfileButton: function(){
+      document.getElementById("pkss-change-profile-settings-button").addEventListener("click", function(e){
+        let profileSettingsContainer = document.getElementById("pkss-change-profile-settings-ctnr");
+        profileSettingsContainer.classList.toggle("pkss-change-profile-settings-ctnr-closed");
+    })},
+
+    addEvtListeners:function(){
       document.getElementById("poker-splash-screen-create-table-button").addEventListener("click", function(e){
         pgm.THPSocket.registerTableOnline();
       });

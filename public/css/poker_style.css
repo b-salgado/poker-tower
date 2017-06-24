@@ -13,65 +13,7 @@ body, html{
 }
 
 /*======Splash Screen========*/
-  .pk-splash-screen{
-    position: absolute;
-    top: 0vh;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 8;
-    overflow-y: scroll;
-  }
-  .pk-splash-screen-gen-top{
-    display: flex;
-    flex-direction: row;
-    width: 60vw;
 
-  }
-  .pk-splash-player-profile-form{
-    position: relative;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    background-color: #fffacd;
-  }
-  .pk-icon-sel-form-header{
-    margin: 2%;
-  }
-  .pk-splash-screen-game-title{
-    margin: 2%;
-  }
-  .pk-splash-player-profile-label{
-    margin: 2%;
-    font-weight: bold;
-  }
-  .pkss-player-current-profile{
-    height: 200px
-  }
-  .pk-splash-input-player-name{
-    width: 30%;
-    font-weight: bold;
-  }
-  .pkss-current-profile-icon{
-    display: inline-block;
-    margin: 2%;
-    width: 128px;
-    height: 128px;
-  }
-  .pkss-icon-sel-cntr{
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-  }
-  .pkss-icon-sel-img{
-    flex: 1;
-    max-width: 96px;
-    max-height: 96px;
-    flex-grow: 1;
-    flex-shrink: 1;
-  }
 
 /*--------*/
   .pk-splash-screen-gen-bottom{
@@ -82,15 +24,6 @@ body, html{
     flex-direction: column;
     align-content: space-around;
   }
-
-  .pk-splash-screen-player-profile{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    height: 50%;
-    background-color: orange;
-  }
-
   .pk-splash-screen-gen-bottom{
     display: flex;
   }
