@@ -11,60 +11,8 @@ body, html{
 	width	:100%;
 	overflow:hidden;
 }
+
 /*--------*/
-  .pk-splash-screen-gen-bottom{
-    position: relative;
-    display: flex;
-    background-color: darkgreen;
-    width: 60%;
-    flex-direction: column;
-    align-content: space-around;
-  }
-  .pk-splash-screen-gen-bottom{
-    display: flex;
-  }
-
-  .pk-splash-screen-create-table{
-    width: 50%;
-    height: 10vh;
-    background-color: blue;
-  }
-
-
-  .pk-splash-screen-current-tables{
-    width: 50%;
-    height: 50%;
-    background-color: gray;
-  }
-
-  .pk-splash-screen-table-element{
-      height: 10vh;
-
-  }
-
-}
-
-
-.pk-icon-sel-individual-container{
-  display: flex;
-  background-color: darkred;
-  flex-direction: column;
-
-  width: 192px;
-  height: 192px;
-
-  justify-content: space-around; /*x axis*/
-  align-items: center; /*y axis*/
-  align-content: ;
-}
-
-
-/*=======================================*/
-
-
-
-
-/*===========================*/
 
 .pk-room-uuid-container{
   position: absolute;

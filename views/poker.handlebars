@@ -19,8 +19,8 @@
         <h3 class="pkss-current-profile-label">Current Player Profile</h3>
         <img class="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
         <span class="pkss-current-profile-stat-ctnr">
-          <h3 id="pkss-current-profile-name">Name Namerous</h3>
-          <h3 id="pkss-current-profile-wealth">$Wealth</h3>
+          <label id="pkss-current-profile-name">Anonymous</label>
+          <label id="pkss-current-profile-wealth">$Wealth</label>
         </span>
       </div>
 
@@ -38,24 +38,25 @@
 
     <form class="pkss-register-table-form">
       <h3 class="pkss-table-header">Create a table</h3>
-      <label>Table Name <input id="pkss-new-table-ante" value=""></label>
+      <label>Table Name <input id="pkss-new-table-name" value=""></label>
       <label>Table Ante <input id="pkss-new-table-ante" value=""></label>
-      <label>#Players (2-4) <input id="pkss-new-table-ante" type="number" min="2" max="4"></label><label> Leave Blank for an open table </label>
+      <label>#Players (2-4) <input id="pkss-new-table-init-players" type="number" min="2" max="4"></label><label> Leave Blank for an open table </label>
       <button type="button" id="pkss-create-table-button">Click to Create Table</button>
     </form>
 
   </div>
 
 
-  <div class="pk-splash-screen-gen-bottom">
-    <div class="pk-splash-screen-gen-bottom">
-      <form class="center-items poker-splash-screen-create-table">
-      </form>
-      <div class="pk-splash-screen-current-tables" id="poker-splash-screen-current-tables">
-      </div>
+  <div class="pkss-gen-bottom">
+    <div id="pkss-player-leaderboard">
+      <div class="pkss-player-leaderboard-element-header"><h3>Player Leader Board</h3></div>
     </div>
-
+    <div id="pkss-current-tables-cntr">
+      <div class="pkss-table-list-element-header"><h3>Current Poker Tables</h3></div>
+      <!-- New Tables Generated Dynamically-->
+    </div>
   </div>
+
 
 
 </div>
@@ -90,3 +91,5 @@
     </span>
   </div>
 </div>
+
+<div class="error-bubble"></div>

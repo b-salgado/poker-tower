@@ -21,7 +21,7 @@ ioPoker.on("connection", function(socket){
     ioPoker.to(socket.id).emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
   }
 
-  socket.on("REGISTER_TABLE", function(){
+  socket.on("REGISTER_TABLE", function(tableInfoPack){
       let table = new PokerEntities.Table(10, cardDeck, uuidObj.v4());
       pokerTableList[table.uuid] = table;
       console.log(table);

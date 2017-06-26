@@ -5,7 +5,8 @@
     color: #000000; } }
 
 button, h1, h2, h3, input, label {
-  font-family: monospace; }
+  font-family: monospace;
+  cursor: default; }
 
 @media (orientation: portrait) {
   .pkss-compatibility-overlay {
@@ -49,8 +50,8 @@ button, h1, h2, h3, input, label {
       display: flex;
       flex-direction: column;
       flex: 1;
-      border-radius: 5% 0% 0% 0%;
-      background-color: rgba(0, 0, 0, 0.2); }
+      border-radius: 5em 0% 0% 0%;
+      background-color: rgba(0, 0, 0, 0.1); }
       .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr {
         height: 170px; }
         .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-label {
@@ -60,16 +61,16 @@ button, h1, h2, h3, input, label {
           width: 128px;
           height: 128px;
           border-radius: 50% 50% 50% 0%;
-          box-shadow: inset 0 0 1em gold, 0 0 1em red;
-          margin: 0 0 0 2%; }
+          box-shadow: 0 0 1em rgba(94, 94, 109, 0.5);
+          margin: 0 0 0 3%; }
         .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr {
           position: absolute;
           margin: 0 0 0 3%; }
           .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr #pkss-current-profile-name, .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-stat-ctnr #pkss-current-profile-wealth {
             margin: 30px 0;
-            text-align: right;
-            box-shadow: inset 0 0 3em crimson, 0 0 1em red; }
+            text-align: right; }
       .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr button {
+        cursor: pointer;
         height: 35px; }
     .pk-splash-screen .pkss-gen-top .pkss-change-profile-settings-ctnr {
       left: 37vw;
@@ -97,7 +98,7 @@ button, h1, h2, h3, input, label {
       flex: 1;
       justify-content: space-between;
       border-radius: 0% 5% 0% 0%;
-      background-color: rgba(0, 0, 0, 0.2); }
+      background-color: rgba(0, 0, 0, 0.1); }
       .pk-splash-screen .pkss-gen-top .pkss-register-table-form .pkss-table-header {
         text-align: left;
         margin: 2% 2% 2% 5%; }
@@ -105,6 +106,78 @@ button, h1, h2, h3, input, label {
         margin: 0% 0% 0% 5%;
         font-size: 1.1em; }
       .pk-splash-screen .pkss-gen-top .pkss-register-table-form input {
+        box-shadow: inset 0 0 1em rgba(94, 94, 109, 0.5);
+        background: rgba(0, 0, 0, 0.1);
         height: 20px; }
       .pk-splash-screen .pkss-gen-top .pkss-register-table-form button {
+        cursor: pointer;
         height: 35px; }
+  .pk-splash-screen .pkss-gen-bottom {
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+    background: transparent; }
+    .pk-splash-screen .pkss-gen-bottom h3 {
+      text-align: center; }
+    .pk-splash-screen .pkss-gen-bottom #pkss-player-leaderboard {
+      flex: 1; }
+      .pk-splash-screen .pkss-gen-bottom #pkss-player-leaderboard .pkss-player-leaderboard-element-header {
+        background: rgba(94, 94, 109, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 35px; }
+    .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr {
+      flex: 1;
+      border-radius: 0% 0% 5% 0%; }
+      .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr .pkss-table-list-element-header {
+        background: rgba(94, 94, 109, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 35px; }
+      .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr .pkss-table-list-element {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 45px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 1em;
+        box-shadow: 0px 0px 1px black;
+        cursor: pointer; }
+      .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr .pkss-table-list-element:hover {
+        box-shadow: 0px 0px 1em black;
+        background: transparent;
+        transition: box-shadow 0.5s, background 0.5s; }
+
+@keyframes fadeout {
+  0% {
+    z-index: 64; }
+  100% {
+    opacity: 0.0;
+    z-index: -1; } }
+
+.error-bubble {
+  position: absolute;
+  z-index: 64;
+  box-shadow: 0px 0px 1em black;
+  border-radius: 1em;
+  height: 25px;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 8px;
+  display: none;
+  background: #c80000; }
+
+.error-bubble-hidden {
+  display: none; }
+
+* {
+  draggable: false;
+  pointer-events: painted;
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: false;
+  -webkit-user-drag: none;
+  -webkit-user-select: none; }

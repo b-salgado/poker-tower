@@ -30,6 +30,7 @@ const PokerEntities = {
     this.communityCards = [];
     this.game_started = false;
     this.lastRaiseAmount = 0;
+    this.name = null;
     this.numOfComCardsOnTable = 0;
     this.numOfPlayers = 0;
     this.initNumOfPlayers = -1; // Not waiting on any players to begin

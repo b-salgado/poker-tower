@@ -1,6 +1,8 @@
 $linear-background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
 $default-text-color: #000000;
 $icon-sel-sq-side-px: 96px;
+$theme-color-0: rgba(94,94,109,0.5);
+$color-error: rgba(200,0,0,1.0);
 
 @keyframes textfadein {
   0% { color: rgba(0,0,0,0.0) }
@@ -8,7 +10,9 @@ $icon-sel-sq-side-px: 96px;
 }
 
 button, h1, h2, h3, input, label{
-  font-family: monospace;}
+  font-family: monospace;
+  cursor: default;
+}
 
 @media (orientation: portrait){
   .pkss-compatibility-overlay{
@@ -52,8 +56,8 @@ button, h1, h2, h3, input, label{
       display: flex;
       flex-direction: column;
       flex: 1;
-      border-radius: 5% 0% 0% 0%;
-      background-color: rgba(0,0,0,0.2);
+      border-radius: 5em 0% 0% 0%;
+      background-color: rgba(0,0,0,0.1);
       .pkss-player-current-profile-cntr{
         //width: 100%;\
         height: 170px;
@@ -64,8 +68,8 @@ button, h1, h2, h3, input, label{
         .pkss-current-profile-icon{
           width: 128px; height: 128px;
           border-radius: 50% 50% 50% 0%;
-          box-shadow: inset 0 0 1em gold, 0 0 1em red;
-          margin: 0 0 0 2%;
+          box-shadow: 0 0 1em $theme-color-0;
+          margin: 0 0 0 3%;
         }
         .pkss-current-profile-stat-ctnr{
           position: absolute;
@@ -73,11 +77,11 @@ button, h1, h2, h3, input, label{
           #pkss-current-profile-name, #pkss-current-profile-wealth{
             margin: 30px 0;
             text-align: right;
-            box-shadow: inset 0 0 3em crimson, 0 0 1em red;
           }
         }
       }
       button{
+        cursor: pointer;
         height: 35px;
       }
       button:focus{
@@ -115,7 +119,7 @@ button, h1, h2, h3, input, label{
       flex: 1;
       justify-content: space-between;
       border-radius: 0% 5% 0% 0%;
-      background-color: rgba(0,0,0,0.2);
+      background-color: rgba(0,0,0,0.1);
       .pkss-table-header{
         text-align: left;
         margin: 2% 2% 2% 5%;
@@ -125,12 +129,96 @@ button, h1, h2, h3, input, label{
         font-size: 1.1em;
       }
       input{
+        box-shadow: inset 0 0 1em $theme-color-0;;
+        background: rgba(0,0,0,0.1);
         height: 20px;
       }
       button{
+        cursor: pointer;
         height: 35px;
       }
     }
   }
+  .pkss-gen-bottom{
+    display: flex;
 
+    flex-direction: row;
+    width: 800px;
+    background: rgba(0, 0, 0, 0.0); //first shade
+    h3{
+      text-align: center;
+    }
+    #pkss-player-leaderboard{
+      flex: 1;
+      .pkss-player-leaderboard-element-header{
+        //background: rgba(255,0,60,0.5);
+        background: $theme-color-0;
+        display: flex;
+        justify-content: center; align-items: center;
+        height: 35px;
+      }
+    }
+    #pkss-current-tables-cntr{
+      flex: 1;
+      border-radius: 0% 0% 5% 0%;
+      .pkss-table-list-element-header{
+        background: $theme-color-0;
+        display: flex;
+        justify-content: center; align-items: center;
+        height: 35px;
+      }
+      .pkss-table-list-element,
+      {
+        display: flex;
+        justify-content: center; align-items: center;
+        height: 45px;
+        background: rgba(0,0,0,0.1); //second shade
+        border-radius: 1em;
+        box-shadow: 0px 0px 1px black;
+        cursor: pointer;
+      }
+      .pkss-table-list-element:hover{
+        box-shadow: 0px 0px 1em black;
+        background: rgba(0,0,0,0.0);
+        transition: box-shadow 0.5s, background 0.5s;
+      }
+    }
+  }
+}
+
+@keyframes fadeout{
+    0%{
+      z-index: 64;
+    }
+    100%{
+      opacity: 0.0;
+      z-index: -1;
+    }
+}
+
+.error-bubble{
+  position: absolute;
+  z-index: 64;
+  box-shadow: 0px 0px 1em black;
+  border-radius: 1em;
+  height: 25px;
+  font-weight: bold;
+  justify-content: center; align-items: center;
+  padding: 2px 8px;
+  display: none;
+  background: $color-error;
+}
+.error-bubble-hidden{
+  display: none;
+}
+
+
+*{
+  draggable: false;
+  pointer-events: painted;
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: false;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
 }

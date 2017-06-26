@@ -212,7 +212,7 @@ define(function(){
 
     updateSplashScreenTableList:function(event_package){
       var table = this.SplashScreenTableTemplate(event_package);
-      var tableList = document.getElementById("poker-splash-screen-current-tables");
+      var tableList = document.getElementById("pkss-current-tables-cntr");
       tableList.innerHTML += table;
       tableList.lastChild.innerText = event_package.table_uuid;
     },
@@ -293,7 +293,9 @@ define(function(){
 
     SplashScreenTableTemplate: function(tableInfoPack){
       return `
-      <div class="center-items poker-splash-screen-table-element" id=`+tableInfoPack.table_uuid+`></div>`
+      <div class="pkss-table-list-element no-sel-drag" id=`+tableInfoPack.table_uuid+`>
+        <label>ROOM:`+0/0+`</label>
+      </div>`
     }
 
 
