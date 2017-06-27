@@ -20,8 +20,8 @@ define(function(){
       this.socket = socket;
 
       //Event Senders
-      this.registerTableOnline = function(table){
-        socket.emit("REGISTER_TABLE");
+      this.registerTableOnline = function(tableInfoPack){
+        socket.emit("REGISTER_TABLE", tableInfoPack);
       }
 
       this.joinTable = function(table_uuid){ //table to join, player to join

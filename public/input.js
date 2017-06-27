@@ -21,24 +21,63 @@ define(["PokerGameManager"], function(pgm){
     activateCreateTable: function(){
       var self = this;
       document.getElementById("pkss-create-table-button").addEventListener("click", function(e){
-        let nameInputElement = document.getElementById("pkss-new-table-name");
+        const nameInputElement = document.getElementById("pkss-new-table-name");
+        const anteInputElement = document.getElementById("pkss-new-table-ante"); //Return NaN if char in string
+        const initPlayersInputElement = document.getElementById("pkss-new-table-init-players");
+        const errorBubble = document.getElementsByClassName("error-bubble")[0];
         let tableInfoPack = {};
-        let name = null;
-        let ante = null;
-        let initPlayers = null;
-        if(self.stringInRange(nameInputElement.value.trim(), 6, 12)){
-          let errorBubble = document.getElementsByClassName("error-bubble")[0];
+        let checkList = [];
+        if(!self.stringInRange(nameInputElement.value.trim(), 1, 12)){
           let nameInputBoundingRect = nameInputElement.getBoundingClientRect();
           errorBubble.style.top = nameInputBoundingRect.top + nameInputBoundingRect.height + "px";
           errorBubble.style.left = nameInputBoundingRect.left + "px";
           errorBubble.innerText = "Please Enter (1-12) Characters";
           errorBubble.style.display = "flex";
+          checkList.push(false);
         }
         else{
+          checkList.push(true);
+          tableInfoPack.name = document.getElementById("pkss-new-table-name");
         }
-        tableInfoPack.name = document.getElementById("pkss-new-table-name");
-        //pgm.THPSocket.registerTableOnline();
+        let ante = Number(anteInputElement.value.trim());
+        if( !(ante) ){
+          let anteInputBoundingRect = anteInputElement.getBoundingClientRect();
+          errorBubble.style.top = anteInputBoundingRect.top + anteInputBoundingRect.height + "px";
+          errorBubble.style.left = anteInputBoundingRect.left + "px";
+          errorBubble.innerText = "Ante Must be a Number";
+          errorBubble.style.display = "flex";
+          checkList.push(false);
+        }
+        else if(ante<=0){
+          let anteInputBoundingRect = anteInputElement.getBoundingClientRect();
+          errorBubble.style.top = anteInputBoundingRect.top + anteInputBoundingRect.height + "px";
+          errorBubble.style.left = anteInputBoundingRect.left + "px";
+          errorBubble.innerText = "Ante Must be GREATER than 0";
+          errorBubble.style.display = "flex";
+          checkList.push(false);
+        }
+        else if(ante){
+          checkList.push(true);
+          tableInfoPack.ante = ante;
+        }
+        if(initPlayersInputElement.value === ""){
+          checkList.push(true);
+        }
+
+        if(self.checkCheckList(checkList)){
+          pgm.THPSocket.registerTableOnline(tableInfoPack);
+        }
+
       });
+    },
+
+    checkCheckList: function(checklist){
+      for(var i=0; i<checklist.length; i++){
+        if( !(checklist[i] === true) ){
+          return false;
+        }
+      }
+      return true;
     },
 
     stringInRange: function(string, min, max){
@@ -49,10 +88,10 @@ define(["PokerGameManager"], function(pgm){
     },
 
     errorBubbleLogic: function(){ //To be filled with more animations error notices etc...
-      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form");
+      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
       const tableInputs = tableRegisterForm.getElementsByTagName("input");
       for(var input=0; input<tableInputs.length; input++){
-        document.getElementsByClassName("pk-splash-screen")[0].addEventListener("click", function(){
+        tableInputs[input].addEventListener("click", function(){
           console.log("test");
           const errorBubbles = document.getElementsByClassName("error-bubble");
           for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
