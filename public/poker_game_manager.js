@@ -63,7 +63,7 @@ define(["GUI"], function(GUI){
           break;
         case "UPDATE_SPLASH_SCREEN_TABLE_LIST":
           GUI.updateSplashScreenTableList(event_package.tableInfoPack);
-          this.inputEventQueue.push("addListenerToNewTableElement");
+          this.inputEventQueue.push( {func:"addListenerToNewTableElement", args:[event_package.tableInfoPack.uuid]} );
           this.numberOfTables++;
           break;
       }

@@ -15,17 +15,17 @@ define(["PokerGameManager"], function(pgm){
       setInterval(function(){
         while(pgm.inputEventQueue.length>0){
           console.log(pgm.inputEventQueue);
-          let doFunc = pgm.inputEventQueue.pop();
-          self[doFunc]();
+          const doFunc = pgm.inputEventQueue.pop();
+          self[doFunc.func](doFunc.args[0]);
           console.log(pgm.inputEventQueue);
         }
       }, self.POLL_EVENT_QUEUE);
     },
 
-    addListenerToNewTableElement: function(){
-      const allTablesInSSList = document.getElementsByClassName("pkss-table-list-element");
+    addListenerToNewTableElement: function(table_uuid){
       const self = this;
-      allTablesInSSList[0].addEventListener("click", function(){
+      const newTableElement = document.getElementById(table_uuid);
+      newTableElement.addEventListener("click", function(){
         const table_uuid = this.id;
         self.cinCurrentPlayerInfo();
         pgm.THPSocket.socket.emit("JOIN_TABLE", pgm.playerClient, table_uuid);
