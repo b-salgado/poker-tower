@@ -57,7 +57,7 @@ button, h1, h2, h3, input, label {
         .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-label {
           text-align: right;
           margin: 2% 5% 2% 2%; }
-        .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr .pkss-current-profile-icon {
+        .pk-splash-screen .pkss-gen-top .pkss-player-profile-settings-cntr .pkss-player-current-profile-cntr #pkss-current-profile-icon {
           width: 128px;
           height: 128px;
           border-radius: 50% 50% 50% 0%;
@@ -145,6 +145,8 @@ button, h1, h2, h3, input, label {
         border-radius: 1em;
         box-shadow: 0px 0px 1px black;
         cursor: pointer; }
+        .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr .pkss-table-list-element label {
+          margin: 0 5px; }
       .pk-splash-screen .pkss-gen-bottom #pkss-current-tables-cntr .pkss-table-list-element:hover {
         box-shadow: 0px 0px 1em black;
         background: transparent;
@@ -164,9 +166,10 @@ button, h1, h2, h3, input, label {
   border-radius: 1em;
   height: 25px;
   font-weight: bold;
+  font-size: 0.9em;
   justify-content: center;
   align-items: center;
-  padding: 2px 8px;
+  padding: 1px 6px;
   display: none;
   background: #c80000; }
 

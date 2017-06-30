@@ -65,7 +65,7 @@ button, h1, h2, h3, input, label{
           text-align: right;
           margin: 2% 5% 2% 2%;
         }
-        .pkss-current-profile-icon{
+        #pkss-current-profile-icon{
           width: 128px; height: 128px;
           border-radius: 50% 50% 50% 0%;
           box-shadow: 0 0 1em $theme-color-0;
@@ -176,6 +176,9 @@ button, h1, h2, h3, input, label{
         border-radius: 1em;
         box-shadow: 0px 0px 1px black;
         cursor: pointer;
+        label{
+          margin: 0 5px
+        }
       }
       .pkss-table-list-element:hover{
         box-shadow: 0px 0px 1em black;
@@ -203,8 +206,9 @@ button, h1, h2, h3, input, label{
   border-radius: 1em;
   height: 25px;
   font-weight: bold;
+  font-size: 0.9em;
   justify-content: center; align-items: center;
-  padding: 2px 8px;
+  padding: 1px 6px;
   display: none;
   background: $color-error;
 }

@@ -16,7 +16,8 @@ ioPoker.on("connection", function(socket){
   ioPoker.to(socket.id).emit("UPDATE_CLIENT_UUID", socket.id);
 
 
-  for(var table in pokerTableList){
+  for(var table_uuid in pokerTableList){
+    let table = pokerTableList[table_uuid];
     console.log("sent "+ table);
     ioPoker.to(socket.id).emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
   }
@@ -26,11 +27,11 @@ ioPoker.on("connection", function(socket){
       table.name = tableInfoPack.name;
       pokerTableList[table.uuid] = table;
       console.log(table);
-      ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table.uuid);
+      ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
   });
 
   socket.on("JOIN_TABLE", function(playerInfoPack, table_uuid){
-    let socket = this;
+    const socket = this;
     let table = pokerTableList[table_uuid];
 
     let player = new PokerEntities.Player();

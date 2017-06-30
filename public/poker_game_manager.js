@@ -4,6 +4,7 @@ define(["GUI"], function(GUI){
     cardDeck: null,
     client_uuid: null,
     playerClient: null,
+    inputEventQueue: [],
     socketEvents: null,
     table: null,
     table_uuid: null,
@@ -61,8 +62,8 @@ define(["GUI"], function(GUI){
           GUI.updateRoomUUID(event_package.table_uuid);
           break;
         case "UPDATE_SPLASH_SCREEN_TABLE_LIST":
-          GUI.updateSplashScreenTableList(event_package);
-          document.getElementById(event_package.table_uuid).addEventListener("click", event_package.callback);
+          GUI.updateSplashScreenTableList(event_package.tableInfoPack);
+          this.inputEventQueue.push("addListenerToNewTableElement");
           this.numberOfTables++;
           break;
       }

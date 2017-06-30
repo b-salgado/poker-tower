@@ -52,7 +52,7 @@ define(function(){
         this.addClientPlayer(playerInfoPack);
       }
       else{
-        var pokerPlayersContainerTop = document.getElementById("poker-players-container-top");
+        var pokerPlayersContainerTop = document.getElementById("pk-players-container-top");
 
         var newPlayer = {
                           playerInfo: playerInfoPack,
@@ -64,7 +64,7 @@ define(function(){
         newPlayer.html = document.getElementById(playerInfoPack.uuid);
 
         console.log(newPlayer.html.getBoundingClientRect(), newPlayer.html);
-        newPlayer.html.getElementsByClassName("poker-player-name")[0].innerText = playerInfoPack.name;
+        newPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name;
 
         this.playersAtTable[newPlayer.playerInfo.uuid] = newPlayer;
       }
@@ -75,11 +75,11 @@ define(function(){
                             playerInfo: playerInfoPack,
                             html: null
                           };
-      this.clientPlayer.html = document.getElementsByClassName("poker-player-client")[0]; //find client
+      this.clientPlayer.html = document.getElementsByClassName("pk-player-client")[0]; //find client
       this.clientPlayer.html.id = playerInfoPack.uuid; //set id
-      this.clientPlayer.html.getElementsByClassName("poker-player-name")[0].innerText = playerInfoPack.name; //set name
-      this.clientPlayer.html.getElementsByClassName("poker-player-icon")[0].src = "./assets/player_icons/"+playerInfoPack.icon;
-      this.clientPlayer.html.getElementsByClassName("poker-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
+      this.clientPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name; //set name
+      this.clientPlayer.html.getElementsByClassName("pk-player-icon")[0].src = "./assets/player_icons/"+playerInfoPack.icon;
+      this.clientPlayer.html.getElementsByClassName("pk-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
     },
 
     addCommunityCard:function(card){
@@ -92,7 +92,7 @@ define(function(){
     },
 
     alertPlayerBet: function(){
-      var clientPlayerCharInput = document.getElementById("poker-inputbox");
+      var clientPlayerCharInput = document.getElementById("pk-inputbox");
       clientPlayerCharInput.style.backgroundColor = "yellow";
       clientPlayerCharInput.style.color = "red";
     },
@@ -104,7 +104,7 @@ define(function(){
     },
 
     removeSplashScreen: function(){
-      document.getElementById("poker-splash-screen").style.display = "none";
+      document.getElementById("pk-splash-screen").style.display = "none";
     },
 
     removePlayer: function(playerInfoPack){
@@ -210,15 +210,15 @@ define(function(){
       }
     },
 
-    updateSplashScreenTableList:function(event_package){
-      var table = this.SplashScreenTableTemplate(event_package);
+    updateSplashScreenTableList:function(tableInfoPack){
+      var table = this.SplashScreenTableTemplate(tableInfoPack);
       var tableList = document.getElementById("pkss-current-tables-cntr");
+      //tableList.lastChild.innerText = event_package.table_uuid;
       tableList.innerHTML += table;
-      tableList.lastChild.innerText = event_package.table_uuid;
     },
 
     updateRoomUUID:function(new_room_uuid){
-      var displayedRoomUUID = document.getElementById("poker-room-uuid");
+      var displayedRoomUUID = document.getElementById("pk-room-uuid");
       displayedRoomUUID.innerText = new_room_uuid;
       //this.scaleFonts();
     },
@@ -226,23 +226,23 @@ define(function(){
     updatePlayerWealth:function(player){
       var playerGraphic = document.getElementById(player.uuid);
       //console.log(player, playerGraphic);
-      playerGraphic.getElementsByClassName("poker-player-wealth")[0].innerText = player.wealth+" ₪";
+      playerGraphic.getElementsByClassName("pk-player-wealth")[0].innerText = player.wealth+" ₪";
     },
 
     updateTablePot:function(pot){
       console.log(pot);
-      document.getElementById("poker-room-pot").innerText = pot+" ₪";
+      document.getElementById("pk-room-pot").innerText = pot+" ₪";
     },
 
     resetInputbox:function(){
-      var clientPlayerCharInput = document.getElementById("poker-inputbox");
+      var clientPlayerCharInput = document.getElementById("pk-inputbox");
       clientPlayerCharInput.style.backgroundColor = "black";
       clientPlayerCharInput.style.color = "green";
       clientPlayerCharInput.value = "";
     },
 
     scaleIcons:function(){
-      var iconsToBeScaled = document.getElementsByClassName("poker-player-icon");
+      var iconsToBeScaled = document.getElementsByClassName("pk-player-icon");
       for(var icon=0; icon<iconsToBeScaled.length; icon++){
         var iconStyle = window.getComputedStyle(iconsToBeScaled[icon]);
         if(Number(iconStyle.width.slice(0,-2)) > Number(iconStyle.height.slice(0,-2))){
@@ -278,14 +278,14 @@ define(function(){
     },
 
     PokerPlayerTemplate: function(playerInfoPack){
-      return `<div class="poker-player" id=`+playerInfoPack.uuid+`>
-        <img class="poker-player-icon" src="./assets/player_icons/`+playerInfoPack.icon+`"></img>
-        <span class="poker-player-stat-container">
-          <div class="poker-player-name-container">
-            <label class="scalable-text poker-player-name"></label>
+      return `<div class="pk-player" id=`+playerInfoPack.uuid+`>
+        <img class="pk-player-icon" src="./assets/player_icons/`+playerInfoPack.icon+`"></img>
+        <span class="pk-player-stat-container">
+          <div class="pk-player-name-container">
+            <label class="scalable-text pk-player-name"></label>
           </div>
-          <div class="poker-player-wealth-container">
-            <label class="scalable-text poker-player-wealth">`+playerInfoPack.wealth+` ₪</label>
+          <div class="pk-player-wealth-container">
+            <label class="scalable-text pk-player-wealth">`+playerInfoPack.wealth+` ₪</label>
           </div>
         </span>
       </div>`
@@ -293,8 +293,8 @@ define(function(){
 
     SplashScreenTableTemplate: function(tableInfoPack){
       return `
-      <div class="pkss-table-list-element no-sel-drag" id=`+tableInfoPack.table_uuid+`>
-        <label>ROOM:`+0/0+`</label>
+      <div class="pkss-table-list-element no-sel-drag" id=`+tableInfoPack.uuid+`>
+        <label>`+tableInfoPack.name+`</label><label>$`+tableInfoPack.ante+`</label><label>`+0/0+`</label>
       </div>`
     }
 

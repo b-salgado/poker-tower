@@ -158,7 +158,7 @@ PokerEntities.Table.prototype.getPlayers = function(player_uuid){ //No handInfo
 }
 
 PokerEntities.Table.prototype.join = function(io, player, socket){
-  let self = this;
+  const self = this;
 
   socket.join(this.uuid);
   this.addPlayer(player);

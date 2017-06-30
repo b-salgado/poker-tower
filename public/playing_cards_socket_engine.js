@@ -41,9 +41,13 @@ define(function(){
       }
 
       //Event Listeners
-      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(table_uuid){
+      /*socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(table_uuid){
         var callback = function(){self.joinTable(table_uuid); console.log(table_uuid);}
         pgm.updateGUI( {"e":"UPDATE_SPLASH_SCREEN_TABLE_LIST", "table_uuid":table_uuid, "callback":callback} );
+      });*/
+
+      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tableInfoPack){
+        pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tableInfoPack:tableInfoPack} );
       });
 
       socket.on("TABLE_READY", function(table_uuid){

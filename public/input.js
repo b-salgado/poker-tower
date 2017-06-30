@@ -1,10 +1,35 @@
 "use strict"
 define(["PokerGameManager"], function(pgm){
   return{
+    POLL_EVENT_QUEUE: 800,
     init: function(){
+      this.cinCurrentPlayerInfo();
       this.addEvtListeners();
       this.errorBubbleLogic();
       this.activateSplashScreenInteractivity();
+      this.startEventQueuePolling();
+    },
+
+    startEventQueuePolling: function(){
+      const self = this;
+      setInterval(function(){
+        while(pgm.inputEventQueue.length>0){
+          console.log(pgm.inputEventQueue);
+          let doFunc = pgm.inputEventQueue.pop();
+          self[doFunc]();
+          console.log(pgm.inputEventQueue);
+        }
+      }, self.POLL_EVENT_QUEUE);
+    },
+
+    addListenerToNewTableElement: function(){
+      const allTablesInSSList = document.getElementsByClassName("pkss-table-list-element");
+      const self = this;
+      allTablesInSSList[0].addEventListener("click", function(){
+        const table_uuid = this.id;
+        self.cinCurrentPlayerInfo();
+        pgm.THPSocket.socket.emit("JOIN_TABLE", pgm.playerClient, table_uuid);
+      });
     },
 
     activateSplashScreenInteractivity:function(){
@@ -14,12 +39,20 @@ define(["PokerGameManager"], function(pgm){
 
     activateChangePlayerProfileButton: function(){
       document.getElementById("pkss-change-profile-settings-button").addEventListener("click", function(e){
-        let profileSettingsContainer = document.getElementById("pkss-change-profile-settings-ctnr");
+        const profileSettingsContainer = document.getElementById("pkss-change-profile-settings-ctnr");
         profileSettingsContainer.classList.toggle("pkss-change-profile-settings-ctnr-closed");
     })},
 
+    cinCurrentPlayerInfo: function(){ //table to join, player to join
+      const errorBubble = document.getElementsByClassName("error-bubble")[0];
+      const currentPlayerIcon = document.getElementById("pkss-current-profile-icon");
+      pgm.playerClient.name = document.getElementById("pkss-current-profile-name").innerText.trim();
+      pgm.playerClient.icon = currentPlayerIcon.src.slice(currentPlayerIcon.src.lastIndexOf("/")+1);
+      console.log(pgm.playerClient);
+    },
+
     activateCreateTable: function(){
-      var self = this;
+      const self = this;
       document.getElementById("pkss-create-table-button").addEventListener("click", function(e){
         const nameInputElement = document.getElementById("pkss-new-table-name");
         const anteInputElement = document.getElementById("pkss-new-table-ante"); //Return NaN if char in string
@@ -37,7 +70,7 @@ define(["PokerGameManager"], function(pgm){
         }
         else{
           checkList.push(true);
-          tableInfoPack.name = document.getElementById("pkss-new-table-name");
+          tableInfoPack.name = document.getElementById("pkss-new-table-name").value;
         }
         let ante = Number(anteInputElement.value.trim());
         if( !(ante) ){
@@ -49,7 +82,7 @@ define(["PokerGameManager"], function(pgm){
           checkList.push(false);
         }
         else if(ante<=0){
-          let anteInputBoundingRect = anteInputElement.getBoundingClientRect();
+          const anteInputBoundingRect = anteInputElement.getBoundingClientRect();
           errorBubble.style.top = anteInputBoundingRect.top + anteInputBoundingRect.height + "px";
           errorBubble.style.left = anteInputBoundingRect.left + "px";
           errorBubble.innerText = "Ante Must be GREATER than 0";
@@ -65,6 +98,7 @@ define(["PokerGameManager"], function(pgm){
         }
 
         if(self.checkCheckList(checkList)){
+          console.log(tableInfoPack);
           pgm.THPSocket.registerTableOnline(tableInfoPack);
         }
 
@@ -104,8 +138,8 @@ define(["PokerGameManager"], function(pgm){
 
     addEvtListeners:function(){
 
-      document.getElementById("poker-raise").addEventListener("click", function(e){
-        var pokerInputVal = document.getElementById("poker-inputbox").value.trim();
+      document.getElementById("pk-raise").addEventListener("click", function(e){
+        var pokerInputVal = document.getElementById("pk-inputbox").value.trim();
         pokerInputVal = Number(pokerInputVal); //Return NaN if char in string
         if( !(pokerInputVal) ){
           alert("Enter a numerical value!");
@@ -122,11 +156,11 @@ define(["PokerGameManager"], function(pgm){
         //if
       });
 
-      document.getElementById("poker-call").addEventListener("click", function(e){
+      document.getElementById("pk-call").addEventListener("click", function(e){
           pgm.THPSocket.socket.emit("PLAYER_CALL", {table_uuid: pgm.table_uuid} );
       });
 
-      document.getElementById("poker-fold").addEventListener("click", function(e){
+      document.getElementById("pk-fold").addEventListener("click", function(e){
           pgm.THPSocket.socket.emit("PLAYER_FOLD", {table_uuid: pgm.table_uuid} );
       });
 

@@ -8,7 +8,7 @@
   <label class="pkss-not-landscape">Display width too Narrow!<br>Try turning your device <br> or increasing the width!</label>
 </div>
 
-<div class="pk-splash-screen" id="poker-splash-screen">
+<div class="pk-splash-screen" id="pk-splash-screen">
 
   <h1 class="pkss-game-title">Poker Tower</h1>
 
@@ -17,7 +17,7 @@
     <div class="pkss-player-profile-settings-cntr">
       <div class="pkss-player-current-profile-cntr">
         <h3 class="pkss-current-profile-label">Current Player Profile</h3>
-        <img class="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
+        <img id="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
         <span class="pkss-current-profile-stat-ctnr">
           <label id="pkss-current-profile-name">Anonymous</label>
           <label id="pkss-current-profile-wealth">$Wealth</label>
@@ -61,33 +61,33 @@
 
 </div>
 
-<div class="pk-players-container-top" id="poker-players-container-top"></div>
+<div class="pk-players-container-top" id="pk-players-container-top"></div>
 
 <div class="pk-room-uuid-container">
-  <label class="pk-room-uuid scalable-text" id="poker-room-uuid">Not in Room</label>
+  <label class="pk-room-uuid scalable-text" id="pk-room-uuid">Not in Room</label>
 </div>
 
 <div class="pk-room-pot-container">
-  <label class="pk-room-pot scalable-text" id="poker-room-pot">0 ₪</label>
+  <label class="pk-room-pot scalable-text" id="pk-room-pot">0 ₪</label>
 </div>
 
 <div class="pk-players-container-bottom">
   <div class="pk-player-client" id="player0">
-    <img class="pk-player-icon" src=""></img>
+    <img class="pk-player-icon" id="pk-client-player-icon" src=""></img>
     <span class="pk-player-stat-container">
       <div class="pk-player-name-container">
-        <label class="scalable-text poker-player-name"></label>
+        <label class="scalable-text pk-player-name" id="pk-client-player-name"></label>
       </div>
       <div class="pk-player-wealth-container">
-        <label class="scalable-text poker-player-wealth">0 ₪</label>
+        <label class="scalable-text pk-player-wealth" id="pk-client-player-wealth">0 ₪</label>
       </div>
     </span>
     <span class="pk-actions-container">
-      <input id="poker-inputbox" class="pk-gui-bet-char-input"></input>
-      <button class="pk-action" id="poker-call">CALL</botton>
-      <button class="pk-action" id="poker-raise">RAISE</botton>
-      <button class="pk-action" id="poker-fold">FOLD</botton>
-      <button class="pk-action" id="poker-chat">CHAT</botton>
+      <input id="pk-inputbox" class="pk-gui-bet-char-input"></input>
+      <button class="pk-action" id="pk-call">CALL</botton>
+      <button class="pk-action" id="pk-raise">RAISE</botton>
+      <button class="pk-action" id="pk-fold">FOLD</botton>
+      <button class="pk-action" id="pk-chat">CHAT</botton>
     </span>
   </div>
 </div>
