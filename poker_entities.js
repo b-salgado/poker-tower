@@ -87,8 +87,9 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
   this.dealPlayers(drawnCardList);
   this.storeCommunityCards(drawnCardList);
 
-  console.log(drawnCardList)
+  console.log(this);
   this.collectAntes(io);
+  this.sendPlayersCards(io);
   this.checkGameState(io);
 }
 
@@ -101,17 +102,17 @@ PokerEntities.Table.prototype.checkGameState = function(io){
       this.setAllPlayersProperty("placed_bet", false, true);
       this.checkGameState(io);
     }
-    else if(table.numOfComCardsOnTable === 3){
+    else if(this.numOfComCardsOnTable === 3){
       this.dealTurn(io);
       this.setAllPlayersProperty("placed_bet", false, true);
       this.checkGameState(io);
     }
-    else if(table.numOfComCardsOnTable === 4){
+    else if(this.numOfComCardsOnTable === 4){
       this.dealRiver(io);
       this.setAllPlayersProperty("placed_bet", false, true);
       this.checkGameState(io);
     }
-    else if(table.numOfComCardsOnTable === 5){
+    else if(this.numOfComCardsOnTable === 5){
       this.setAllPlayersProperty("placed_bet", false, true);
       //evaluateWinningHand(table);
       //payoutWinner(table_uuid, player_uuid);
@@ -147,29 +148,29 @@ PokerEntities.Table.prototype.dealPlayers = function(drawnCardList){
     cardPlayer = this.players[player];
     cardPlayer.is_playing = true;
     while(cardPlayer.cardsInHand.length < 2){
-    card = Math.floor( Math.random() * 52 );
-    while(drawnCardList[card] === true){
       card = Math.floor( Math.random() * 52 );
-    }
-    drawnCardList[card] = true;
-    this.players[player].cardsInHand.push(this.cardDeck[card]);
+      while(drawnCardList[card] === true){
+        card = Math.floor( Math.random() * 52 );
+      }
+      drawnCardList[card] = true;
+      this.players[player].cardsInHand.push(this.cardDeck.cards[card]);
     }
   }
 }
 
 PokerEntities.Table.prototype.dealRiver = function(io){
-  io.in(table_uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
+  io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
   this.numOfComCardsOnTable++;
 }
 
 PokerEntities.Table.prototype.dealTurn = function(io){
-  io.in(table_uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
+  io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
   this.numOfComCardsOnTable++;
 }
 
 PokerEntities.Table.prototype.getPlayers = function(player_uuid){ //No handInfo
   var requestedPlayers = {};
-  console.log(this);
+  //console.log(this);
   if(player_uuid){
     let cardPlayer = Object.assign({}, this.players[player]);
     cardPlayer.cardsInHand = [];
@@ -249,9 +250,27 @@ PokerEntities.Table.prototype.storeCommunityCards = function(drawnCardList){
       card = Math.floor( Math.random() * 52 );
     }
     drawnCardList[card] = true;
-    this.communityCards.push(this.cardDeck[card]);
+    this.communityCards.push(this.cardDeck.cards[card]);
   }
 }
+
+PokerEntities.Table.prototype.sendPlayersCards = function(io){
+  let currentHandPlayers = this.allPlayingHand();
+  for(var player in this.players){
+    io.to(player).emit("CARD_HAND", { currentHandPlayers: currentHandPlayers, clientHand: this.players[player].cardsInHand } );
+  }
+}
+
+PokerEntities.Table.prototype.allPlayingHand = function(){// No handInfo
+  var allPlayingHand = {};
+  for(var player in this.players){
+    if(this.players[player].is_playing){
+      allPlayingHand[player] = this.washHand(this.players[player]);
+    }
+  }
+  return allPlayingHand;
+}
+
 
 PokerEntities.Table.prototype.washHand = function(player){
   let cardPlayer = Object.assign({}, player);

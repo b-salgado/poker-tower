@@ -141,25 +141,3 @@ function payoutWinner(table_uuid, player_uuid){
   player.wealth += table.pot;
   table.pot = 0;
 }
-
-function sendPlayersCards(table_uuid){
-  var table = pokerTableList[table_uuid];
-  var currentHandPlayers = allPlayingHand(table_uuid);
-  for(player in table.players){
-    ioPoker.to(player).emit("CARD_HAND", { currentHandPlayers: currentHandPlayers, clientHand: table.players[player].cardsInHand } );
-  }
-}
-
-function allPlayingHand(table_uuid){// No handInfo
-  var table = pokerTableList[table_uuid];
-  console.log(table, pokerTableList);
-  var allPlayingHand= {};
-  for(player in table.players){
-    if(table.players[player].is_playing){
-      var cardPlayer = Object.assign({}, table.players[player]);
-      cardPlayer.cardsInHand = [];
-      allPlayingHand[player] = cardPlayer;
-    }
-  }
-  return allPlayingHand;
-}
