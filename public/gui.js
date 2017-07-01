@@ -27,6 +27,7 @@ define(function(){
       this.canvas2DContext = this.canvas.getContext("2d");
       this.background = this.imageLoader("./assets/red_poker.jpg");
 
+      this.initErrorBubbleLogic();
       this.cardsSprite = this.imageLoader("./assets/french_deck_0.png");
       this.canvas2DContext.fillStyle = "rgba(100,100,0,1.0)";
 
@@ -85,6 +86,7 @@ define(function(){
     addCommunityCard:function(card){
       var spaceBetweenCards = 10;
       var offset = 150;
+      console.log(card);
       card.scale_xy = [70, 100];
       card.pos_xy = [this.communityCards.length * (card.scale_xy[0] + spaceBetweenCards) + offset, window.innerHeight/2 - card.scale_xy[1]];
       this.communityCards.push(card);
@@ -101,6 +103,34 @@ define(function(){
       var image = new Image();
       image.src = src;
       return image;
+    },
+
+    initErrorBubbleLogic: function(){ //To be filled with more animations error notices etc...
+      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
+      const errorBubbles = document.getElementsByClassName("pk-error-bubble");
+      const tableInputs = tableRegisterForm.getElementsByTagName("input");
+      for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
+        errorBubbles[errorBubble].addEventListener("animationend", function(){
+          console.log(this);
+          this.classList.remove("pk-error-bubble-show");
+        });
+      }
+      /*for(var input=0; input<tableInputs.length; input++){
+        tableInputs[input].addEventListener("click", function(){
+          const errorBubbles = document.getElementsByClassName("pk-error-bubble");
+          for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
+            console.log(errorBubbles[errorBubble]);
+          }
+        });
+      }*/
+    },
+
+    displayErrorBubble: function(pos, message){
+      const errorBubble = document.getElementsByClassName("pk-error-bubble")[0];
+      errorBubble.style.left = pos[0] + "px";
+      errorBubble.style.top = pos[1] + "px";
+      errorBubble.innerText = message;
+      errorBubble.classList.add("pk-error-bubble-show");
     },
 
     removeSplashScreen: function(){
@@ -213,7 +243,6 @@ define(function(){
     updateSplashScreenTableList:function(tableInfoPack){
       var table = this.SplashScreenTableTemplate(tableInfoPack);
       var tableList = document.getElementById("pkss-current-tables-cntr");
-      //tableList.lastChild.innerText = event_package.table_uuid;
       tableList.innerHTML += table;
     },
 

@@ -190,31 +190,43 @@ button, h1, h2, h3, input, label{
   }
 }
 
-@keyframes fadeout{
+@keyframes fadeInOut{
     0%{
-      z-index: 64;
+      opacity: 0.0;
+    }
+    50%{
+      opacity: 1.0;
     }
     100%{
       opacity: 0.0;
-      z-index: -1;
     }
 }
 
-.error-bubble{
+@keyframes easeToPos{
+    100%{
+    }
+}
+
+.pk-error-bubble{
   position: absolute;
+  //left: -9999px;
+  display: flex;
   z-index: 64;
   box-shadow: 0px 0px 1em black;
   border-radius: 1em;
   height: 25px;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0em;
   justify-content: center; align-items: center;
   padding: 1px 6px;
-  display: none;
+  //display: none;
+  opacity: 0.0;
   background: $color-error;
 }
-.error-bubble-hidden{
-  display: none;
+.pk-error-bubble-show{
+  //transition: top 5s cubic-bezier(1.000, -0.530, 0.405, 1.425);
+  font-size: 0.9em;
+  animation: fadeInOut 4s cubic-bezier(.05,.00,.3,1);
 }
 
 

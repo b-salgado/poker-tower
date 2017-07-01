@@ -5,7 +5,6 @@ define(["PokerGameManager"], function(pgm){
     init: function(){
       this.cinCurrentPlayerInfo();
       this.addEvtListeners();
-      this.errorBubbleLogic();
       this.activateSplashScreenInteractivity();
       this.startEventQueuePolling();
     },
@@ -44,7 +43,7 @@ define(["PokerGameManager"], function(pgm){
     })},
 
     cinCurrentPlayerInfo: function(){ //table to join, player to join
-      const errorBubble = document.getElementsByClassName("error-bubble")[0];
+      const errorBubble = document.getElementsByClassName("pk-error-bubble")[0];
       const currentPlayerIcon = document.getElementById("pkss-current-profile-icon");
       pgm.playerClient.name = document.getElementById("pkss-current-profile-name").innerText.trim();
       pgm.playerClient.icon = currentPlayerIcon.src.slice(currentPlayerIcon.src.lastIndexOf("/")+1);
@@ -57,36 +56,38 @@ define(["PokerGameManager"], function(pgm){
         const nameInputElement = document.getElementById("pkss-new-table-name");
         const anteInputElement = document.getElementById("pkss-new-table-ante"); //Return NaN if char in string
         const initPlayersInputElement = document.getElementById("pkss-new-table-init-players");
-        const errorBubble = document.getElementsByClassName("error-bubble")[0];
+        const errorBubble = document.getElementsByClassName("pk-error-bubble")[0];
+        const nameInputBoundingRect = nameInputElement.getBoundingClientRect();
+        const anteInputBoundingRect = anteInputElement.getBoundingClientRect();
+        const ante = Number(anteInputElement.value.trim());
         let tableInfoPack = {};
         let checkList = [];
         if(!self.stringInRange(nameInputElement.value.trim(), 1, 12)){
-          let nameInputBoundingRect = nameInputElement.getBoundingClientRect();
-          errorBubble.style.top = nameInputBoundingRect.top + nameInputBoundingRect.height + "px";
-          errorBubble.style.left = nameInputBoundingRect.left + "px";
-          errorBubble.innerText = "Please Enter (1-12) Characters";
-          errorBubble.style.display = "flex";
+          pgm.updateGUI({
+            e: "DISPLAY_ERROR_BUBBLE",
+            pos: [nameInputBoundingRect.left, nameInputBoundingRect.top + nameInputBoundingRect.height],
+            message: "Name: Enter (1-12) Characters"
+          });
           checkList.push(false);
         }
         else{
           checkList.push(true);
           tableInfoPack.name = document.getElementById("pkss-new-table-name").value;
         }
-        let ante = Number(anteInputElement.value.trim());
         if( !(ante) ){
-          let anteInputBoundingRect = anteInputElement.getBoundingClientRect();
-          errorBubble.style.top = anteInputBoundingRect.top + anteInputBoundingRect.height + "px";
-          errorBubble.style.left = anteInputBoundingRect.left + "px";
-          errorBubble.innerText = "Ante Must be a Number";
-          errorBubble.style.display = "flex";
+          pgm.updateGUI({
+            e: "DISPLAY_ERROR_BUBBLE",
+            pos: [anteInputBoundingRect.left, anteInputBoundingRect.top + anteInputBoundingRect.height],
+            message: "Ante: Must be a Number"
+          });
           checkList.push(false);
         }
         else if(ante<=0){
-          const anteInputBoundingRect = anteInputElement.getBoundingClientRect();
-          errorBubble.style.top = anteInputBoundingRect.top + anteInputBoundingRect.height + "px";
-          errorBubble.style.left = anteInputBoundingRect.left + "px";
-          errorBubble.innerText = "Ante Must be GREATER than 0";
-          errorBubble.style.display = "flex";
+          pgm.updateGUI({
+            e: "DISPLAY_ERROR_BUBBLE",
+            pos: [anteInputBoundingRect.left, anteInputBoundingRect.top + anteInputBoundingRect.height],
+            message: "Ante: Must be greater than 0"
+          });
           checkList.push(false);
         }
         else if(ante){
@@ -120,21 +121,14 @@ define(["PokerGameManager"], function(pgm){
       }
       return false;
     },
-
-    errorBubbleLogic: function(){ //To be filled with more animations error notices etc...
-      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
-      const tableInputs = tableRegisterForm.getElementsByTagName("input");
-      for(var input=0; input<tableInputs.length; input++){
+      /*for(var input=0; input<tableInputs.length; input++){
         tableInputs[input].addEventListener("click", function(){
-          console.log("test");
-          const errorBubbles = document.getElementsByClassName("error-bubble");
+          const errorBubbles = document.getElementsByClassName("pk-error-bubble");
           for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
             console.log(errorBubbles[errorBubble]);
-            errorBubbles[errorBubble].style.display = "none";
           }
         });
-      }
-    },
+      }*/
 
     addEvtListeners:function(){
 

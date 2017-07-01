@@ -89,26 +89,20 @@ ioPoker.on("connection", function(socket){
       var betValue = table.lastRaiseAmount;
       var player = table.players[socket.id];
       console.log("Player has called for $"+betValue);
-      if(betValue<0){
-        console.log(player.uuid+" is being cheeky. I guess he wants to go all in!"); //A negative value would mean client edited the code
-        table.pot += player.wealth;
-        table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
-      }
-      else if( betValue < player.wealth){
+      if(betValue < player.wealth){
         table.pot += betValue;
         table.lastRaiseAmount = betValue;
-        setPlayerWealth(player, -betValue);
+        player.payBets(betValue);
       }
       else{ //Characters would also mean the client edited the code
         table.pot += player.wealth;
         table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
+        player.setWealth(0);
       }
       player.placed_bet = true;
       sendUpdatePlayerWealth(table, player);
       sendUpdateTablePot(table);
-      checkGameState(table.uuid);
+      table.checkGameState(ioPoker);
     }
   });
 
@@ -133,32 +127,12 @@ ioPoker.on("connection", function(socket){
 
 });
 
-function checkGameState(table_uuid){
-  if(TF_allPlayersBet(table_uuid)){
-    var table = pokerTableList[table_uuid];
-    table.lastRaiseAmount = 0;
-    console.log("All players have bet. . .");
-    if(table.numOfComCardsOnTable === 0){
-      dealFlop(table_uuid);
-      setAllPlayersProperty(table, "placed_bet", false, true);
-      checkGameState(table_uuid);
-    }
-    else if(table.numOfComCardsOnTable === 3){
-      dealTurn(table_uuid);
-      setAllPlayersProperty(table, "placed_bet", false, true);
-      checkGameState(table_uuid);
-    }
-    else if(table.numOfComCardsOnTable === 4){
-      dealRiver(table_uuid);
-      setAllPlayersProperty(table, "placed_bet", false, true);
-      checkGameState(table_uuid);
-    }
-    else if(table.numOfComCardsOnTable === 5){
-      setAllPlayersProperty(table, "placed_bet", false, true);
-      //evaluateWinningHand(table);
-      //payoutWinner(table_uuid, player_uuid);
-    }
-  }
+function sendUpdatePlayerWealth(table, player){
+  ioPoker.to(table.uuid).emit("UPDATE_PLAYER_WEALTH", { player:player } );
+}
+
+function sendUpdateTablePot(table){
+  ioPoker.to(table.uuid).emit("UPDATE_TABLE_POT", table.pot);
 }
 
 function payoutWinner(table_uuid, player_uuid){
@@ -166,21 +140,6 @@ function payoutWinner(table_uuid, player_uuid){
   var player = table.players[player_uuid];
   player.wealth += table.pot;
   table.pot = 0;
-}
-
-function setAllPlayersProperty(table, property, value, playing_only){
-  if(playing_only){
-    for(player in table.players){
-      if(table.players[player].is_playing === true){
-        table.players[player][property] = value;
-      }
-    }
-  }
-  else{
-    for(player in table.players){
-      table.players[player][property] = value;
-    }
-  }
 }
 
 function sendPlayersCards(table_uuid){
