@@ -93,10 +93,49 @@ define(function(){
       this.renderObjects.push(card);
     },
 
-    alertPlayerBet: function(){
-      var clientPlayerCharInput = document.getElementById("pk-inputbox");
-      clientPlayerCharInput.style.backgroundColor = "yellow";
-      clientPlayerCharInput.style.color = "red";
+    alertErrorBubble: function(pos, message){
+      const errorBubble = document.getElementsByClassName("pk-error-bubble")[0];
+      errorBubble.style.left = pos[0] + "px";
+      errorBubble.style.top = pos[1] + "px";
+      errorBubble.innerText = message;
+      errorBubble.classList.add("pk-error-bubble-show");
+    },
+
+    startPlayerBetTimer: function(player){//Eventually program a visual timer
+      const errorBubble = document.getElementById("pk=bet-timer");
+      errorBubble.style.left = pos[0] + "px";
+      errorBubble.style.top = pos[1] + "px";
+
+      errorBubble.innerText = message;
+      errorBubble.classList.add("pk-error-bubble-show");
+    },
+
+    drawPlayersCards: function(){
+      for(var player in this.playersAtTable){
+        if( !(player === this.client_uuid) ){
+          var cardsInHand = [];
+          var cardPadding = 5;
+          var playerHtmlRect = null;
+          var drawPosLeft = null;
+          var drawPosTop = null;
+          var cardScale_xy = [null, null];
+          //console.log(this.playersAtTable[player].playerInfo.is_playing);
+          if(this.playersAtTable[player].playerInfo.is_playing){
+            cardsInHand = this.playersAtTable[player].playerInfo.cardsInHand;
+            //playerHtmlRect = this.playersAtTable[player].html.getBoundingClientRect();
+            playerHtmlRect = document.getElementById(this.playersAtTable[player].playerInfo.uuid).getBoundingClientRect();
+            drawPosLeft = playerHtmlRect.left + playerHtmlRect.width/3;
+            drawPosTop = playerHtmlRect.bottom + cardPadding; // +3px
+            cardScale_xy[0] = playerHtmlRect.width / 3.5;
+            cardScale_xy[1] = cardScale_xy[0] * 1.5;
+            //console.log(this.playersAtTable[player].html, drawPosLeft, drawPosTop);
+            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[0].VALUE-2)*this.CARD_XY[0], cardsInHand[0].SUIT*this.CARD_XY[1],
+            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
+            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[1].VALUE-2)*this.CARD_XY[1], cardsInHand[1].SUIT*this.CARD_XY[1],
+            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft + cardScale_xy[0] + cardPadding, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
+          }
+        }
+      }
     },
 
     imageLoader: function(src){
@@ -115,22 +154,18 @@ define(function(){
           this.classList.remove("pk-error-bubble-show");
         });
       }
-      /*for(var input=0; input<tableInputs.length; input++){
-        tableInputs[input].addEventListener("click", function(){
-          const errorBubbles = document.getElementsByClassName("pk-error-bubble");
-          for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
-            console.log(errorBubbles[errorBubble]);
-          }
-        });
-      }*/
     },
 
-    displayErrorBubble: function(pos, message){
-      const errorBubble = document.getElementsByClassName("pk-error-bubble")[0];
-      errorBubble.style.left = pos[0] + "px";
-      errorBubble.style.top = pos[1] + "px";
-      errorBubble.innerText = message;
-      errorBubble.classList.add("pk-error-bubble-show");
+    initAlertPlayerBetLogic: function(){ //To be filled with more animations error notices etc...
+      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
+      const errorBubbles = document.getElementsByClassName("pk-error-bubble");
+      const tableInputs = tableRegisterForm.getElementsByTagName("input");
+      for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
+        errorBubbles[errorBubble].addEventListener("animationend", function(){
+          console.log(this);
+          this.classList.remove("pk-error-bubble-show");
+        });
+      }
     },
 
     removeSplashScreen: function(){
@@ -196,73 +231,6 @@ define(function(){
       this.renderObjects = [];
     },
 
-    drawPlayersCards: function(){
-      for(var player in this.playersAtTable){
-        if( !(player === this.client_uuid) ){
-          var cardsInHand = [];
-          var cardPadding = 5;
-          var playerHtmlRect = null;
-          var drawPosLeft = null;
-          var drawPosTop = null;
-          var cardScale_xy = [null, null];
-          //console.log(this.playersAtTable[player].playerInfo.is_playing);
-          if(this.playersAtTable[player].playerInfo.is_playing){
-            cardsInHand = this.playersAtTable[player].playerInfo.cardsInHand;
-            //playerHtmlRect = this.playersAtTable[player].html.getBoundingClientRect();
-            playerHtmlRect = document.getElementById(this.playersAtTable[player].playerInfo.uuid).getBoundingClientRect();
-            drawPosLeft = playerHtmlRect.left + playerHtmlRect.width/3;
-            drawPosTop = playerHtmlRect.bottom + cardPadding; // +3px
-            cardScale_xy[0] = playerHtmlRect.width / 3.5;
-            cardScale_xy[1] = cardScale_xy[0] * 1.5;
-            //console.log(this.playersAtTable[player].html, drawPosLeft, drawPosTop);
-            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[0].VALUE-2)*this.CARD_XY[0], cardsInHand[0].SUIT*this.CARD_XY[1],
-            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[1].VALUE-2)*this.CARD_XY[1], cardsInHand[1].SUIT*this.CARD_XY[1],
-            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft + cardScale_xy[0] + cardPadding, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-          }
-        }
-      }
-    },
-
-    updateCardHand: function(game_state_pkg){
-      var currentHandPlayers = game_state_pkg.currentHandPlayers;
-      for(var player in currentHandPlayers){
-        if( !(currentHandPlayers[player].uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
-          this.playersAtTable[player].playerInfo.is_playing = true;
-          this.playersAtTable[player].playerInfo.cardsInHand = [];
-          this.playersAtTable[player].playerInfo.cardsInHand[0] = this.nullCard;
-          this.playersAtTable[player].playerInfo.cardsInHand[1] = this.nullCard;
-          console.log(this.playersAtTable);
-        }
-        else if(currentHandPlayers[player].uuid === this.client_uuid){
-          this.clientPlayer.playerInfo.cardsInHand = game_state_pkg.clientHand;
-        }
-      }
-    },
-
-    updateSplashScreenTableList:function(tableInfoPack){
-      var table = this.SplashScreenTableTemplate(tableInfoPack);
-      var tableList = document.getElementById("pkss-current-tables-cntr");
-      tableList.innerHTML += table;
-    },
-
-    updateRoomUUID:function(new_room_uuid){
-      var displayedRoomUUID = document.getElementById("pk-room-uuid");
-      displayedRoomUUID.innerText = new_room_uuid;
-      //this.scaleFonts();
-    },
-
-    updatePlayerWealth:function(player){
-      var playerGraphic = document.getElementById(player.uuid);
-      //console.log(player, playerGraphic);
-      playerGraphic.getElementsByClassName("pk-player-wealth")[0].innerText = player.wealth+" ₪";
-    },
-
-    updateTablePot:function(pot){
-      console.log(pot);
-      document.getElementById("pk-room-pot").innerText = pot+" ₪";
-    },
-
     resetInputbox:function(){
       var clientPlayerCharInput = document.getElementById("pk-inputbox");
       clientPlayerCharInput.style.backgroundColor = "black";
@@ -305,6 +273,47 @@ define(function(){
 
       }
     },
+
+    updateCardHand: function(game_state_pkg){
+      var currentHandPlayers = game_state_pkg.currentHandPlayers;
+      for(var player in currentHandPlayers){
+        if( !(currentHandPlayers[player].uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
+          this.playersAtTable[player].playerInfo.is_playing = true;
+          this.playersAtTable[player].playerInfo.cardsInHand = [];
+          this.playersAtTable[player].playerInfo.cardsInHand[0] = this.nullCard;
+          this.playersAtTable[player].playerInfo.cardsInHand[1] = this.nullCard;
+          console.log(this.playersAtTable);
+        }
+        else if(currentHandPlayers[player].uuid === this.client_uuid){
+          this.clientPlayer.playerInfo.cardsInHand = game_state_pkg.clientHand;
+        }
+      }
+    },
+
+    updateSplashScreenTableList:function(tableInfoPack){
+      var table = this.SplashScreenTableTemplate(tableInfoPack);
+      var tableList = document.getElementById("pkss-current-tables-cntr");
+      tableList.innerHTML += table;
+    },
+
+    updateRoomUUID:function(new_room_uuid){
+      var displayedRoomUUID = document.getElementById("pk-room-uuid");
+      displayedRoomUUID.innerText = new_room_uuid;
+      //this.scaleFonts();
+    },
+
+    updatePlayerWealth:function(player){
+      var playerGraphic = document.getElementById(player.uuid);
+      //console.log(player, playerGraphic);
+      playerGraphic.getElementsByClassName("pk-player-wealth")[0].innerText = player.wealth+" ₪";
+    },
+
+    updateTablePot:function(pot){
+      console.log(pot);
+      document.getElementById("pk-room-pot").innerText = pot+" ₪";
+    },
+
+
 
     PokerPlayerTemplate: function(playerInfoPack){
       return `<div class="pk-player" id=`+playerInfoPack.uuid+`>

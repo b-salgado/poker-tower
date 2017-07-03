@@ -121,16 +121,9 @@ define(["PokerGameManager"], function(pgm){
       }
       return false;
     },
-      /*for(var input=0; input<tableInputs.length; input++){
-        tableInputs[input].addEventListener("click", function(){
-          const errorBubbles = document.getElementsByClassName("pk-error-bubble");
-          for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
-            console.log(errorBubbles[errorBubble]);
-          }
-        });
-      }*/
 
     addEvtListeners:function(){
+      document.getElementById("pk-inputbox").addEvtListeners
 
       document.getElementById("pk-raise").addEventListener("click", function(e){
         var pokerInputVal = document.getElementById("pk-inputbox").value.trim();

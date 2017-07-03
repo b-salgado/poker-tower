@@ -37,7 +37,7 @@ define(["GUI"], function(GUI){
           GUI.client_uuid = event_package.uuid;
           break;
         case "DISPLAY_ERROR_BUBBLE":
-          GUI.displayErrorBubble(event_package.pos, event_package.message);
+          GUI.alertErrorBubble(event_package.pos, event_package.message);
           break;
         case "REMOVE_PLAYER":
           GUI.removePlayer(event_package.player);

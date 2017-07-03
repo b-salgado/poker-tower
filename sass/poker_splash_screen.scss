@@ -207,9 +207,9 @@ button, h1, h2, h3, input, label{
     }
 }
 
-.pk-error-bubble{
+.pk-error-bubble, .{
   position: absolute;
-  //left: -9999px;
+  top: -99px;
   display: flex;
   z-index: 64;
   box-shadow: 0px 0px 1em black;
