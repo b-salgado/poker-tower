@@ -164,8 +164,9 @@ button, h1, h2, h3, input, label {
 @keyframes easeToPos {
   100% { } }
 
-.pk-error-bubble {
+.pk-error-bubble, #pk-bet-timer {
   position: absolute;
+  top: -99px;
   display: flex;
   z-index: 64;
   box-shadow: 0px 0px 1em black;

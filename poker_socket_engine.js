@@ -121,7 +121,6 @@ ioPoker.on("connection", function(socket){
       delete pokerPlayerList[socket.id];
       let DESTORY_TABLE = table.leave(ioPoker, socket);
       if(DESTORY_TABLE){ delete pokerTableList[table.uuid] }
-
     }
   });
 

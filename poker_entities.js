@@ -53,11 +53,11 @@ PokerEntities.Player.prototype.payBets = function(amount){
     return amount;
   }
 }
-PokerEntities.Player.prototype.setIcon = function(icon){this.icon = icon};
-PokerEntities.Player.prototype.setName = function(name){this.name = name};
-PokerEntities.Player.prototype.setUUID = function(uuid){this.uuid = uuid};
-PokerEntities.Player.prototype.setWealth = function(amount){this.wealth = amount};
-PokerEntities.Player.prototype.receivesPayout = function(amount){this.weath+=amount};
+PokerEntities.Player.prototype.setIcon = function(icon){ this.icon = icon };
+PokerEntities.Player.prototype.setName = function(name){ this.name = name };
+PokerEntities.Player.prototype.setUUID = function(uuid){ this.uuid = uuid };
+PokerEntities.Player.prototype.setWealth = function(amount){ this.wealth = amount };
+PokerEntities.Player.prototype.receivesPayout = function(amount){ this.wealth+=amount };
 
 /*=======Table Prototypes========*/
 
@@ -219,7 +219,13 @@ PokerEntities.Table.prototype.leave = function(io, socket){
   delete this.players[socket.id];
   this.numOfPlayers--;
   if(this.numOfPlayers === 1){
-    //this.payout
+    for(const player in this.players){
+      console.log(this.ante+" here");
+      this.players[player].receivesPayout(this.pot);
+      this.pot = 0;
+      this.sendUpdateTablePot(io);
+      this.sendUpdatePlayerWealth(io, this.players[player]);
+    }
     this.reset(io);
     return false;
   }
@@ -232,7 +238,7 @@ PokerEntities.Table.prototype.reset = function(io){
   this.communityCards = [];
   this.game_started = false;
   this.numOfComCardsOnTable = 0;
-  this.numOfPlayers = 0;
+  this.numOfPlayers = this.numOfPlayers;
   this.lastRaiseAmount = 0;
   this.pot = 0;
   for(var player in this.players){
@@ -261,6 +267,14 @@ PokerEntities.Table.prototype.sendPlayersCards = function(io){
   }
 }
 
+PokerEntities.Table.prototype.sendUpdatePlayerWealth = function(io, player){
+  io.to(this.uuid).emit("UPDATE_PLAYER_WEALTH", { player:this.washHand(player) } );
+}
+
+PokerEntities.Table.prototype.sendUpdateTablePot = function(io){
+  io.to(this.uuid).emit("UPDATE_TABLE_POT", this.pot);
+}
+
 PokerEntities.Table.prototype.allPlayingHand = function(){// No handInfo
   var allPlayingHand = {};
   for(var player in this.players){
@@ -270,7 +284,6 @@ PokerEntities.Table.prototype.allPlayingHand = function(){// No handInfo
   }
   return allPlayingHand;
 }
-
 
 PokerEntities.Table.prototype.washHand = function(player){
   let cardPlayer = Object.assign({}, player);

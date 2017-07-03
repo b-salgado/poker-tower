@@ -46,11 +46,18 @@ define(function(){
         pgm.updateGUI( {"e":"UPDATE_SPLASH_SCREEN_TABLE_LIST", "table_uuid":table_uuid, "callback":callback} );
       });*/
 
-      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tableInfoPack){
-        pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tableInfoPack:tableInfoPack} );
+      socket.on("ALERT_PLAYER_BET", function(){
+        pgm.updateGUI( {e:"ALERT_PLAYER_BET"} );
+        //console.log("placed_bet");
       });
 
-      socket.on("TABLE_READY", function(table_uuid){
+      socket.on("CARD_HAND", function(game_state_pkg){
+        console.log(game_state_pkg);
+        pgm.updateGUI( {e:"UPDATE_CARD_HAND", game_state_pkg: game_state_pkg} ); //currentHandPlayers, clientHand
+      });
+
+      socket.on("COMMUNITY_CARD", function(card){
+        pgm.updateGUI( {e:"ADD_COMMUNITY_CARD", card:card} );
       });
 
       socket.on("JOINED_TABLE", function(table_info_pack){
@@ -70,31 +77,21 @@ define(function(){
         pgm.updateGUI( {e:"REMOVE_PLAYER", player:player} );
       });
 
-      socket.on("ALERT_PLAYER_BET", function(){
-        pgm.updateGUI( {e:"ALERT_PLAYER_BET"} );
-        //console.log("placed_bet");
-      });
-
-      socket.on("COMMUNITY_CARD", function(card){
-        pgm.updateGUI( {e:"ADD_COMMUNITY_CARD", card:card} );
-      });
-
-      socket.on("CARD_HAND", function(game_state_pkg){
-        console.log(game_state_pkg);
-        pgm.updateGUI( {e:"UPDATE_CARD_HAND", game_state_pkg: game_state_pkg} ); //currentHandPlayers, clientHand
-      });
-
       socket.on("RESET_RENDERED_GAME_OBJECTS", function(){
         pgm.updateGUI( {e:"RESET_RENDERED_GAME_OBJECTS"} );
+      });
+
+      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tableInfoPack){
+        pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tableInfoPack:tableInfoPack} );
+      });
+
+      socket.on("UPDATE_CLIENT_UUID", function(uuid){
+        pgm.updateGUI( {e:"UPDATE_CLIENT_UUID", uuid:uuid} );
       });
 
       socket.on("UPDATE_PLAYER_WEALTH", function(player_pkg){
         console.log(player_pkg);
         pgm.updateGUI( {e:"UPDATE_PLAYER_WEALTH", player:player_pkg.player} );
-      });
-
-      socket.on("UPDATE_CLIENT_UUID", function(uuid){
-        pgm.updateGUI( {e:"UPDATE_CLIENT_UUID", uuid:uuid} );
       });
 
       socket.on("UPDATE_TABLE_POT", function(pot){

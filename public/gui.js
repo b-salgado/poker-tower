@@ -28,6 +28,7 @@ define(function(){
       this.background = this.imageLoader("./assets/red_poker.jpg");
 
       this.initErrorBubbleLogic();
+      this.initAlertPlayerBetLogic();
       this.cardsSprite = this.imageLoader("./assets/french_deck_0.png");
       this.canvas2DContext.fillStyle = "rgba(100,100,0,1.0)";
 
@@ -56,9 +57,9 @@ define(function(){
         var pokerPlayersContainerTop = document.getElementById("pk-players-container-top");
 
         var newPlayer = {
-                          playerInfo: playerInfoPack,
-                          html: null
-                        };
+          playerInfo: playerInfoPack,
+          html: null
+        };
 
         newPlayer.html = this.PokerPlayerTemplate(playerInfoPack);
         pokerPlayersContainerTop.innerHTML += newPlayer.html;
@@ -101,13 +102,16 @@ define(function(){
       errorBubble.classList.add("pk-error-bubble-show");
     },
 
-    startPlayerBetTimer: function(player){//Eventually program a visual timer
-      const errorBubble = document.getElementById("pk=bet-timer");
-      errorBubble.style.left = pos[0] + "px";
-      errorBubble.style.top = pos[1] + "px";
-
-      errorBubble.innerText = message;
-      errorBubble.classList.add("pk-error-bubble-show");
+    alertPlayerBetTimer: function(player){//Eventually program a visual timer
+      const betTimer = document.getElementById("pk-bet-timer");
+      const playerHtmlRect = document.getElementById(this.client_uuid).getBoundingClientRect();
+      betTimer.innerText = "Your turn";
+      betTimer.style.fontSize = "0.9em";
+      betTimer.style.opacity = "1.0";
+      betTimer.style.backgroundColor = "yellow";
+      betTimer.style.left = playerHtmlRect.left + "px";
+      betTimer.style.display = "flex";
+      betTimer.style.top = playerHtmlRect.top - betTimer.getBoundingClientRect().height *2  + "px";
     },
 
     drawPlayersCards: function(){
@@ -157,15 +161,17 @@ define(function(){
     },
 
     initAlertPlayerBetLogic: function(){ //To be filled with more animations error notices etc...
-      const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
-      const errorBubbles = document.getElementsByClassName("pk-error-bubble");
-      const tableInputs = tableRegisterForm.getElementsByTagName("input");
-      for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
-        errorBubbles[errorBubble].addEventListener("animationend", function(){
-          console.log(this);
-          this.classList.remove("pk-error-bubble-show");
+      const betTimer = document.getElementById("pk-bet-timer");
+      const inputBox = document.getElementById("pk-inputbox");
+      const inputButtons = document.getElementsByClassName("pk-action");
+      for(var inputButton=0; inputButton<inputButtons.length; inputButton++){
+        inputButtons[inputButton].addEventListener("click", function(){
+          betTimer.style.display = "none";
         });
       }
+      inputBox.addEventListener("click", function(){
+        betTimer.style.display = "none";
+      });
     },
 
     removeSplashScreen: function(){

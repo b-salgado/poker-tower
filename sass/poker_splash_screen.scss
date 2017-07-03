@@ -1,4 +1,5 @@
 $linear-background: linear-gradient(to bottom, #9c9c9c 0%, #dcdcdc 10%);
+$theme-color-red-0: rgb(202, 6, 6);
 $default-text-color: #000000;
 $icon-sel-sq-side-px: 96px;
 $theme-color-0: rgba(94,94,109,0.5);
@@ -207,7 +208,7 @@ button, h1, h2, h3, input, label{
     }
 }
 
-.pk-error-bubble, .{
+.pk-error-bubble, #pk-bet-timer{
   position: absolute;
   top: -99px;
   display: flex;

@@ -30,7 +30,7 @@ define(["GUI"], function(GUI){
           GUI.scaleIcons();
           break;
         case "ALERT_PLAYER_BET":
-          GUI.alertPlayerBet();
+          GUI.alertPlayerBetTimer();
           break;
         case "UPDATE_CLIENT_UUID":
           //this.client_uuid = event_package.uuid;
