@@ -1,15 +1,26 @@
 "use strict"
-var ioPoker = io.of("/poker");
-var uuidObj = require("uuid");
+const ioPoker = io.of("/poker");
+const uuidObj = require("uuid");
 
-var event = require("./poker_event_handlers");
-var PokerEntities = require("./poker_entities");
+const event = require("./poker_event_handlers");
+const TexHoldEvaluate = require("./poker_hand_evaluator.js")
+const PokerEntities = require("./poker_entities");
 
-var cardDeck = new PokerEntities.CardDeck();
+const cardDeck = new PokerEntities.CardDeck();
 cardDeck.create();
 
-var pokerTableList = {};
-var pokerPlayerList = {};
+let pokerTableList = {};
+let pokerPlayerList = {};
+
+//==================Testing Area
+
+let table0 = new PokerEntities.Table(10, cardDeck, uuidObj.v4());
+let player0 = {uuid: 9283, cardsInHand: [ {SUIT:0, VALUE:13 }, {SUIT:0, VALUE: 12} ]}
+table0.storeCommunityCards([]);
+table0.players[player0.uuid] = player0;
+TexHoldEvaluate.findTableWinner(table0);
+
+//Testing Area^^^^^^^^^^^^^^^^^
 
 ioPoker.on("connection", function(socket){
   console.log(socket.id + " has connected...");
@@ -18,7 +29,6 @@ ioPoker.on("connection", function(socket){
 
   for(var table_uuid in pokerTableList){
     let table = pokerTableList[table_uuid];
-    console.log("sent "+ table);
     ioPoker.to(socket.id).emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
   }
 
@@ -26,7 +36,6 @@ ioPoker.on("connection", function(socket){
       let table = new PokerEntities.Table(tableInfoPack.ante, cardDeck, uuidObj.v4());
       table.name = tableInfoPack.name;
       pokerTableList[table.uuid] = table;
-      console.log(table);
       ioPoker.emit("SPLASH_SCREEN_TABLE_LIST_ITEM", table);
   });
 
@@ -53,38 +62,8 @@ ioPoker.on("connection", function(socket){
     }
   });
 
-  socket.on("PLAYER_RAISE", function(bet_package){
-    var table = pokerTableList[bet_package.table_uuid];
-    var betValue = bet_package.betValue;
-    if(table.waitOnBetFrom === socket.id && betValue>table.lastRaiseAmount){
-      var player = table.players[socket.id];
-      console.log(player.uuid+" has risen for $"+betValue);
-      if(betValue<0){
-        console.log(player.uuid+" is being cheeky. I guess he wants to go all in!"); //A negative value would mean client edited the code
-        table.pot += player.wealth;
-        table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
-      }
-      else if( betValue < player.wealth){
-        table.pot += betValue;
-        table.lastRaiseAmount = betValue;
-        setPlayerWealth(player, -betValue);
-      }
-      else{ //Characters would also mean the client edited the code
-        table.pot += player.wealth;
-        table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
-      }
-      setAllPlayersProperty(table, "placed_bet", false);
-      player.placed_bet = true;
-      sendUpdatePlayerWealth(table, player);
-      sendUpdateTablePot(table);
-      checkGameState(table.uuid);
-    }
-  });
-
   socket.on("PLAYER_CALL", function(bet_package){
-    var table = pokerTableList[bet_package.table_uuid];
+    let table = pokerTableList[bet_package.table_uuid];
     if(table.waitOnBetFrom === socket.id){
       var betValue = table.lastRaiseAmount;
       var player = table.players[socket.id];
@@ -111,6 +90,35 @@ ioPoker.on("connection", function(socket){
     if(table.waitOnBetFrom === socket.id){
       //var betValue = table.lastRaiseAmount;
       table.players[socket.id].is_playing = false;
+      checkGameState(table.uuid);
+    }
+  });
+
+  socket.on("PLAYER_RAISE", function(bet_package){
+    var table = pokerTableList[bet_package.table_uuid];
+    var betValue = bet_package.betValue;
+    if(table.waitOnBetFrom === socket.id && betValue>table.lastRaiseAmount){
+      var player = table.players[socket.id];
+      if(betValue<0){
+        console.log(player.uuid+" is being cheeky. I guess he wants to go all in!"); //A negative value would mean client edited the code
+        table.pot += player.wealth;
+        table.lastRaiseAmount = player.wealth;
+        setPlayerWealth(player, -player.wealth);
+      }
+      else if( betValue < player.wealth){
+        table.pot += betValue;
+        table.lastRaiseAmount = betValue;
+        setPlayerWealth(player, -betValue);
+      }
+      else{ //Characters would also mean the client edited the code
+        table.pot += player.wealth;
+        table.lastRaiseAmount = player.wealth;
+        setPlayerWealth(player, -player.wealth);
+      }
+      setAllPlayersProperty(table, "placed_bet", false);
+      player.placed_bet = true;
+      sendUpdatePlayerWealth(table, player);
+      sendUpdateTablePot(table);
       checkGameState(table.uuid);
     }
   });

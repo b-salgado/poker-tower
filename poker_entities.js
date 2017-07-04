@@ -28,6 +28,7 @@ const PokerEntities = {
     this.ante = ante;
     this.cardDeck = cardDeck;
     this.communityCards = [];
+    this.evalutator = null;
     this.game_started = false;
     this.lastRaiseAmount = 0;
     this.name = null;
@@ -62,7 +63,6 @@ PokerEntities.Player.prototype.receivesPayout = function(amount){ this.wealth+=a
 /*=======Table Prototypes========*/
 
 PokerEntities.Table.prototype.addPlayer = function(player){
-  console.log(player);
   this.players[player.uuid] = player;
   this.numOfPlayers++;
 }
@@ -87,7 +87,6 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
   this.dealPlayers(drawnCardList);
   this.storeCommunityCards(drawnCardList);
 
-  console.log(this);
   this.collectAntes(io);
   this.sendPlayersCards(io);
   this.checkGameState(io);
