@@ -93,6 +93,7 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
 }
 
 PokerEntities.Table.prototype.checkGameState = function(io){
+  console.log(this);
   if(this.allPlayersBet_TF(io)){
     this.lastRaiseAmount = 0;
     console.log("All players have bet. . .");
@@ -113,9 +114,20 @@ PokerEntities.Table.prototype.checkGameState = function(io){
     }
     else if(this.numOfComCardsOnTable === 5){
       this.setAllPlayersProperty("placed_bet", false, true);
-      //evaluateWinningHand(table);
-      //payoutWinner(table_uuid, player_uuid);
+      let winnersAndRank = this.evaluator.findTableWinner(this);
+      console.log(winnersAndRank);
+      io.in(this.uuid).emit("GAME_WIN", winnersAndRank);
+      this.payoutWinners(io, winnersAndRank);
     }
+  }
+}
+
+PokerEntities.Table.prototype.payoutWinners = function(io, winnersAndRank){
+  const payout = Math.floor(this.pot / winnersAndRank.winners.length);// House takes the change
+  for(var i=0; i<winnersAndRank.winners.length; i++){
+    var player = this.players[winnersAndRank.winners[i]];
+    player.receivesPayout(payout);
+    this.sendUpdatePlayerWealth(io, player);
   }
 }
 

@@ -22,7 +22,7 @@ const TexHoldEvaluate = {
       cardPlayer.winCardArray[7] = this.checkPair(cardPlayer.sevenOf14);//return highest single pair
 
       if(cardPlayer.winCardArray[5] && cardPlayer.winCardArray[7]){
-        cardPlayer.winCardArray[2] = [cardPlayer.winCardArray[5], cardPlayer.winCardArray[7]];// int 3 of kind and int pair
+        cardPlayer.winCardArray[2] = cardPlayer.winCardArray[5] + cardPlayer.winCardArray[7];// int 3 of kind and int pai
       }
       else{
         cardPlayer.winCardArray[2] = false;// int 3 of kind and int pair
@@ -69,8 +69,17 @@ const TexHoldEvaluate = {
 
   },
 
-  checkKickers: function(){
-
+  checkKickers: function(sevenOf14, numOfKickers){
+    let totalKickerValue = 0;
+    for(var i=14; i>1; i--){
+      if(sevenOf14[i] === 1){
+        numOfKickers--;
+        totalKickerValue += i;
+        if(numOfKickers === 0){
+          return totalKickerValue;
+        }
+      }
+    }
   },
 
   comparePlayerHands: function(playerEvalList){//returns winning id or an array of winning ids the case of a tie
@@ -88,7 +97,6 @@ const TexHoldEvaluate = {
         return winnersAndRank;
       }
       else if(playersInRank.length > 1){
-        console.log("Tiebreaker");
         const winnersAndRank = {winners: this.determineIfTie(playersInRank, winRank), winRank: winRank};
         return winnersAndRank;
       }
@@ -98,30 +106,25 @@ const TexHoldEvaluate = {
   determineIfTie: function(playersInRank, winRank){//returns winning id or an array of winning ids the case of a tie
     let winners = [];
     let winnersUUID = [];
-    winners[0] = playersInRank[0];
-    if(winRank === 8 || winRank === 7 || winRank === 6 || winRank === 2){//binary checks
-      for(var i=1; i<playersInRank.length; i++){
-        if(winners[0].winCardArray[winRank][0] < playersInRank[i].winCardArray[winRank][0]){
-          winners[0] = playersInRank[i];
-        }
-        else if(winners[0].winCardArray[winRank][0] === playersInRank[i].winCardArray[winRank][0]){
-          if(winners[0].winCardArray[winRank][1] < playersInRank[i].winCardArray[winRank][1]){
-            winners[0] = playersInRank[i];
-          }
-          else if(winners[0].winCardArray[winRank][1] === playersInRank[i].winCardArray[winRank][1]){
-            winners.push(playersInRank[i]);
-          }
-        }
+    if(winRank === 7){//binary checks
+      for(var i=0; i<playersInRank.length; i++){
+        playersInRank[i].winCardArray[winRank] = this.checkKickers(playersInRank[i].sevenOf14, 3);
       }
     }
-    else if(winRank === 5 || winRank === 4 || winRank === 3 || winRank === 1 || winRank === 0){//unary checks
-      for(var i=1; i<playersInRank.length; i++){
-        if(winners[0].winCardArray[winRank] < playersInRank[i].winCardArray[winRank]){
-          winners[0] = playersInRank[i];
-        }
-        else if(winners[0].winCardArray[winRank][0] === playersInRank[i].winCardArray[winRank][0]){
-          winners.push(playersInRank[i]);
-        }
+    else if(winRank === 6){//binary checks
+      for(var i=0; i<playersInRank.length; i++){
+        playersInRank[i].winCardArray[winRank] = this.checkKickers(playersInRank[i].sevenOf14, 1);
+      }
+    }
+
+    winners[0] = playersInRank[0];
+
+    for(var i=1; i<playersInRank.length; i++){
+      if(winners[0].winCardArray[winRank] < playersInRank[i].winCardArray[winRank]){
+        winners[0] = playersInRank[i];
+      }
+      else if(winners[0].winCardArray[winRank] === playersInRank[i].winCardArray[winRank]){
+        winners.push(playersInRank[i]);
       }
     }
 
@@ -202,7 +205,6 @@ const TexHoldEvaluate = {
       if(sevenOf14[i] == true){
         cardsChecked++;
         totalCardValue += i;
-        console.log(totalCardValue);
         if(cardsChecked === 5){
           return totalCardValue;
         }
