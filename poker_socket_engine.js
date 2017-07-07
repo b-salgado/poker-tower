@@ -100,31 +100,30 @@ ioPoker.on("connection", function(socket){
   });
 
   socket.on("PLAYER_RAISE", function(bet_package){
-    var table = pokerTableList[bet_package.table_uuid];
-    var betValue = bet_package.betValue;
+    const table = pokerTableList[bet_package.table_uuid];
+    let betValue = bet_package.betValue;
+    let amountPlayerPaid = 0;
     if(table.waitOnBetFrom === socket.id && betValue>table.lastRaiseAmount){
-      var player = table.players[socket.id];
-      if(betValue<0){
-        console.log(player.uuid+" is being cheeky. I guess he wants to go all in!"); //A negative value would mean client edited the code
-        table.pot += player.wealth;
-        table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
-      }
-      else if( betValue < player.wealth){
+      let player = table.players[socket.id];
+      if(betValue < player.wealth){
         table.pot += betValue;
         table.lastRaiseAmount = betValue;
-        setPlayerWealth(player, -betValue);
+        amountPlayerPaid = betValue;
+        player.payBets(betValue);
       }
       else{ //Characters would also mean the client edited the code
         table.pot += player.wealth;
         table.lastRaiseAmount = player.wealth;
-        setPlayerWealth(player, -player.wealth);
+        amountPlayerPaid = player.wealth;
+        player.payBets(player.wealth);
       }
-      setAllPlayersProperty(table, "placed_bet", false);
+      const message = player.name + " has raised " + amountPlayerPaid + ". Call " + amountPlayerPaid + " or raise above " + amountPlayerPaid;
+      ioPoker.to(table.uuid).emit("TABLE_ANNOUNCEMENT", message);
+      table.setAllPlayersProperty("placed_bet", false, true);
       player.placed_bet = true;
-      sendUpdatePlayerWealth(table, player);
-      sendUpdateTablePot(table);
-      checkGameState(table.uuid);
+      table.sendUpdatePlayerWealth(ioPoker, player);
+      table.sendUpdateTablePot(ioPoker);
+      table.checkGameState(ioPoker);
     }
   });
 

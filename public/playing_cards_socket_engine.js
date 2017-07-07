@@ -81,8 +81,18 @@ define(function(){
         pgm.updateGUI( {e:"RESET_RENDERED_GAME_OBJECTS"} );
       });
 
+      socket.on("SHOW_DOWN", function(currentHandPlayers){
+        //console.log(currentHandPlayers);
+        pgm.updateGUI( {e:"SHOW_DOWN", currentHandPlayers:currentHandPlayers} );
+      });
+
       socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tableInfoPack){
         pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tableInfoPack:tableInfoPack} );
+      });
+
+      socket.on("TABLE_ANNOUNCEMENT", function(message){
+        //console.log(currentHandPlayers);
+        pgm.updateGUI( {e:"TABLE_ANNOUNCEMENT", message:message} );
       });
 
       socket.on("UPDATE_CLIENT_UUID", function(uuid){
@@ -90,7 +100,7 @@ define(function(){
       });
 
       socket.on("UPDATE_PLAYER_WEALTH", function(player_pkg){
-        console.log(player_pkg);
+        //console.log(player_pkg);
         pgm.updateGUI( {e:"UPDATE_PLAYER_WEALTH", player:player_pkg.player} );
       });
 

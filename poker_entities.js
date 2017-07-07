@@ -117,10 +117,19 @@ PokerEntities.Table.prototype.checkGameState = function(io){
       let winnersAndRank = this.evaluator.findTableWinner(this);
       console.log(winnersAndRank);
       io.in(this.uuid).emit("GAME_WIN", winnersAndRank);
+      this.showDown(io);
       this.payoutWinners(io, winnersAndRank);
+      this.pot = 0;
+      this.sendUpdateTablePot(io);
     }
   }
 }
+
+PokerEntities.Table.prototype.showDown = function(io){
+  const no_wash = true;
+  let currentHandPlayers = this.allPlayingHand(no_wash);
+  io.to(this.uuid).emit("SHOW_DOWN", { currentHandPlayers: currentHandPlayers} );
+},
 
 PokerEntities.Table.prototype.payoutWinners = function(io, winnersAndRank){
   const payout = Math.floor(this.pot / winnersAndRank.winners.length);// House takes the change
@@ -286,11 +295,20 @@ PokerEntities.Table.prototype.sendUpdateTablePot = function(io){
   io.to(this.uuid).emit("UPDATE_TABLE_POT", this.pot);
 }
 
-PokerEntities.Table.prototype.allPlayingHand = function(){// No handInfo
+PokerEntities.Table.prototype.allPlayingHand = function(no_wash){// No handInfo
   var allPlayingHand = {};
-  for(var player in this.players){
-    if(this.players[player].is_playing){
-      allPlayingHand[player] = this.washHand(this.players[player]);
+  if(no_wash){
+    for(var player in this.players){
+      if(this.players[player].is_playing){
+        allPlayingHand[player] = this.players[player];
+      }
+    }
+  }
+  else{
+    for(var player in this.players){
+      if(this.players[player].is_playing){
+        allPlayingHand[player] = this.washHand(this.players[player]);
+      }
     }
   }
   return allPlayingHand;

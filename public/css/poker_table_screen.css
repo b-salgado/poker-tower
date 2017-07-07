@@ -1,145 +1,120 @@
-z/*A Good Blue 18 85 85// 188 85 85 // 188 36 85 //A Purple Accent Color rgb188 36 148*/
-*{
-  margin:0px;
-  padding:0px;
-  border:0px;
-}
+/*A Good Blue 18 85 85// 188 85 85 // 188 36 85 //A Purple Accent Color rgb188 36 148*/
+* {
+  margin: 0px;
+  padding: 0px;
+  border: 0px; }
 
-body, html{
-	position:absolute;
-	height	:100%;
-	width	:100%;
-	overflow:hidden;
-}
+body, html {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; }
 
 /*--------*/
-
-.pk-room-uuid-container{
+.pk-room-uuid-container {
   position: absolute;
+  display: none;
   width: 10vw;
   height: 5vh;
-
   left: 10vw;
   top: 80vh;
-
-
   background-color: black;
   z-index: 4;
-
-  display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }
+  .pk-room-uuid-container .pk-room-uuid {
+    color: green; }
 
-.pk-room-uuid{
-  color: green;
-}
-
-.pk-player-client{ /*Client Player*/
+.pk-player-client {
+  /*Client Player*/
   position: relative;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 25% 0% 0% 0%;
-
   width: 50vw;
   max-width: 100%;
   min-width: 300px;
-
   height: 10vh;
   max-height: 150px;
   min-height: 80px;
-
   justify-content: space-between;
-  display: flex;
+  display: flex; }
 
-}
-
-.pk-player{ /*Other Players*/
+.pk-player {
+  /*Other Players*/
   position: relative;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 25% 0% 0% 0%;
-
   width: 20vw;
   max-width: 100%;
   min-width: 200px;
-
   height: 10vh;
   max-height: 150px;
   min-height: 80px;
-
   justify-content: space-between;
-  display: flex;
+  display: flex; }
 
-}
-
-.pk-player-icon{
+.pk-player-icon {
   width: 30%;
   height: 100%;
-  border-radius: 50%;
-}
+  border-radius: 50%; }
 
-.pk-player-stat-container{
+.pk-player-stat-container {
   display: flex;
   width: 40%;
-  flex-direction: column;
-}
+  flex-direction: column; }
 
-.pk-player-name-container{
+.pk-player-name-container {
   color: white;
   width: 100%;
   height: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }
 
-.pk-player-wealth-container{
-  color: rgba(200,100,100,1.0);
+.pk-player-wealth-container {
+  color: #c86464;
   width: 100%;
   height: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }
 
-.pk-actions-container{
+.pk-actions-container {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  width: 45%;
-}
-.pk-gui-bet-char-input{/*input box for bets*/
+  width: 45%; }
+
+.pk-gui-bet-char-input {
+  /*input box for bets*/
   background-color: #000000;
   color: #00FF00;
   padding: 0 4%;
   font-size: 16px;
   text-align: right;
   width: 100%;
-  height: 50%;
-}
+  height: 50%; }
 
-.pk-action{
-  background-color: rgba(0,0,0,0.1);
+.pk-action {
+  background-color: rgba(0, 0, 0, 0.1);
   color: white;
   width: 25%;
-  height: 50%;
-}
+  height: 50%; }
 
-.pk-action:hover{
-  background-color: rgba(255,0,0,0.2);
-  cursor: pointer;
-}
+.pk-action:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+  cursor: pointer; }
 
-.pk-players-container-top{
+.pk-players-container-top {
   position: absolute;
   top: 0vh;
   width: 100vw;
   height: 15vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }
 
-.pk-players-container-bottom{
+.pk-players-container-bottom {
   position: absolute;
   top: 85vh;
   width: 100vw;
@@ -147,32 +122,25 @@ body, html{
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 4;
-}
+  z-index: 4; }
 
-.pk-room-pot-container{
+.pk-room-pot-container {
   position: absolute;
   width: 15vw;
   height: 5vh;
-
   left: 5vw;
   top: 50vh;
-
   background-color: white;
   z-index: 4;
-
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }
 
 /*generic scalable text*/
-.scalable-text{
-  font-size: 1px;
-}
+.scalable-text {
+  font-size: 1px; }
 
-.center-items{
+.center-items {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
+  justify-content: center; }

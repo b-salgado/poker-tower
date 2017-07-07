@@ -5,7 +5,7 @@ define(function(){
     cardsSprite: null,
     communityCards: [],
     CARD_XY: [125, 181],
-    CARD_SCALE: [70,100],
+    CARD_SCALE_XY: [70,70*1.55],
     background: null,
     canvas2DContext: null,
 
@@ -15,9 +15,9 @@ define(function(){
     renderObjects:[],
 
     nullCard:{
-      FACE_DOWN: true,
-      SUIT: 4,
-      VALUE: 2,
+      face_down: true,
+      suit: 4,
+      value: 2,
       pos_xy: [null,null]
     },
 
@@ -65,7 +65,7 @@ define(function(){
         pokerPlayersContainerTop.innerHTML += newPlayer.html;
         newPlayer.html = document.getElementById(playerInfoPack.uuid);
 
-        console.log(newPlayer.html.getBoundingClientRect(), newPlayer.html);
+        //console.log(newPlayer.html.getBoundingClientRect(), newPlayer.html);
         newPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name;
 
         this.playersAtTable[newPlayer.playerInfo.uuid] = newPlayer;
@@ -74,9 +74,10 @@ define(function(){
 
     addClientPlayer:function(playerInfoPack){
       this.clientPlayer = {
-                            playerInfo: playerInfoPack,
-                            html: null
-                          };
+        playerInfo: playerInfoPack,
+        html: null
+      };
+      this.playersAtTable[this.clientPlayer.playerInfo.uuid] = this.clientPlayer;
       this.clientPlayer.html = document.getElementsByClassName("pk-player-client")[0]; //find client
       this.clientPlayer.html.id = playerInfoPack.uuid; //set id
       this.clientPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name; //set name
@@ -84,14 +85,16 @@ define(function(){
       this.clientPlayer.html.getElementsByClassName("pk-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
     },
 
-    addCommunityCard:function(card){
-      var spaceBetweenCards = 10;
-      var offset = 150;
-      console.log(card);
-      card.scale_xy = [70, 100];
-      card.pos_xy = [this.communityCards.length * (card.scale_xy[0] + spaceBetweenCards) + offset, window.innerHeight/2 - card.scale_xy[1]];
+    addCommunityCard:function(sentCard){
+      const margin = 10;
+      const xOffset = window.innerWidth / 2;
+      const x = (this.CARD_SCALE_XY[0] + margin) * this.communityCards.length + xOffset;
+      console.log( this.CARD_SCALE_XY[0]*this.communityCards.length + xOffset + margin );
+      const y = window.innerHeight/2 - this.CARD_SCALE_XY[1];
+
+      let card = new this.Card(false, [x, y], this.CARD_SCALE_XY, sentCard.SUIT, sentCard.VALUE);
+
       this.communityCards.push(card);
-      this.renderObjects.push(card);
     },
 
     alertErrorBubble: function(pos, message){
@@ -114,30 +117,30 @@ define(function(){
       betTimer.style.top = playerHtmlRect.top - betTimer.getBoundingClientRect().height *2  + "px";
     },
 
+    alertMessage: function(pos, message){
+      const betTimer = document.getElementsByClassName("pk-error-bubble")[0];
+      const playerHtmlRect = document.getElementById(this.client_uuid).getBoundingClientRect();
+      betTimer.innerText = message;
+      betTimer.style.fontSize = "0.9em";
+      betTimer.style.opacity = "1.0";
+      betTimer.style.backgroundColor = "yellow";
+      betTimer.style.left = "10px";
+      betTimer.style.display = "flex";
+      betTimer.style.top = playerHtmlRect.top - betTimer.getBoundingClientRect().height *4  + "px";
+    },
+
     drawPlayersCards: function(){
+      var cardPlayer = null;
+      var renderObject = null;
+      var cardsInHand = null;
       for(var player in this.playersAtTable){
-        if( !(player === this.client_uuid) ){
-          var cardsInHand = [];
-          var cardPadding = 5;
-          var playerHtmlRect = null;
-          var drawPosLeft = null;
-          var drawPosTop = null;
-          var cardScale_xy = [null, null];
-          //console.log(this.playersAtTable[player].playerInfo.is_playing);
-          if(this.playersAtTable[player].playerInfo.is_playing){
-            cardsInHand = this.playersAtTable[player].playerInfo.cardsInHand;
-            //playerHtmlRect = this.playersAtTable[player].html.getBoundingClientRect();
-            playerHtmlRect = document.getElementById(this.playersAtTable[player].playerInfo.uuid).getBoundingClientRect();
-            drawPosLeft = playerHtmlRect.left + playerHtmlRect.width/3;
-            drawPosTop = playerHtmlRect.bottom + cardPadding; // +3px
-            cardScale_xy[0] = playerHtmlRect.width / 3.5;
-            cardScale_xy[1] = cardScale_xy[0] * 1.5;
-            //console.log(this.playersAtTable[player].html, drawPosLeft, drawPosTop);
-            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[0].VALUE-2)*this.CARD_XY[0], cardsInHand[0].SUIT*this.CARD_XY[1],
-            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-            this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[1].VALUE-2)*this.CARD_XY[1], cardsInHand[1].SUIT*this.CARD_XY[1],
-            this.CARD_XY[0], this.CARD_XY[1], drawPosLeft + cardScale_xy[0] + cardPadding, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-          }
+        cardPlayer = this.playersAtTable[player];
+        cardsInHand = cardPlayer.playerInfo.cardsInHand;
+        for(var card=0; card < cardsInHand.length; card++){
+          renderObject = cardsInHand[card];
+          //console.log(renderObject);
+          this.canvas2DContext.drawImage(this.cardsSprite, (renderObject.value-2)*this.CARD_XY[0], renderObject.suit*this.CARD_XY[1],
+          this.CARD_XY[0], this.CARD_XY[1], renderObject.pos_xy[0], renderObject.pos_xy[1], renderObject.scale_xy[0], renderObject.scale_xy[1]);
         }
       }
     },
@@ -201,40 +204,21 @@ define(function(){
 
     drawAllCards: function(){
       this.drawPlayersCards();
-      this.drawClientPlayerCards();
-      this.renderGameObjects();
+      this.drawCommunityCards();
     },
 
-    drawClientPlayerCards: function(){
-      if(this.clientPlayer && this.clientPlayer.playerInfo.cardsInHand.length > 0){
-        var cardsInHand = this.clientPlayer.playerInfo.cardsInHand;
-        var cardPadding = 5;
-        var cardScale_xy = this.CARD_SCALE;
-        var clientPlayerHtmlRect = this.clientPlayer.html.getBoundingClientRect();
-        var drawPosLeft = clientPlayerHtmlRect.left + clientPlayerHtmlRect.width / 2;
-        var drawPosTop = clientPlayerHtmlRect.top - cardScale_xy[1] - cardPadding;
-
-        //console.log(cardsInHand, this.clientPlayer.playerInfo.cardsInHand);
-
-        this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[0].VALUE-2)*this.CARD_XY[0], cardsInHand[0].SUIT*this.CARD_XY[1],
-        this.CARD_XY[0], this.CARD_XY[1], drawPosLeft, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-        this.canvas2DContext.drawImage(this.cardsSprite, (cardsInHand[1].VALUE-2)*this.CARD_XY[0], cardsInHand[1].SUIT*this.CARD_XY[1],
-        this.CARD_XY[0], this.CARD_XY[1], drawPosLeft + cardScale_xy[0] + cardPadding, drawPosTop, cardScale_xy[0], cardScale_xy[1]);
-      }
-    },
-
-    renderGameObjects:function(){
-      var renderObject = null;
-      for(var renObjIndex=0; renObjIndex<this.renderObjects.length; renObjIndex++){
-        renderObject = this.renderObjects[renObjIndex];
-        //console.log(renderObject);
-        this.canvas2DContext.drawImage(this.cardsSprite, (renderObject.VALUE-2)*this.CARD_XY[0], renderObject.SUIT*this.CARD_XY[1],
-        this.CARD_XY[0], this.CARD_XY[1], renderObject.pos_xy[0], renderObject.pos_xy[1], renderObject.scale_xy[0], renderObject.scale_xy[1]);
+    drawCommunityCards:function(){
+      let card = null;
+      for(var card_index = 0; card_index < this.communityCards.length; card_index++){
+        card = this.communityCards[card_index];
+        this.canvas2DContext.drawImage(this.cardsSprite, (card.value-2)*this.CARD_XY[0], card.suit*this.CARD_XY[1],
+        this.CARD_XY[0], this.CARD_XY[1], card.pos_xy[0], card.pos_xy[1], card.scale_xy[0], card.scale_xy[1]);
       }
     },
 
     resetRenderedGameObjects:function(){
       this.renderObjects = [];
+      this.communityCards = [];
     },
 
     resetInputbox:function(){
@@ -280,20 +264,54 @@ define(function(){
       }
     },
 
-    updateCardHand: function(game_state_pkg){
-      var currentHandPlayers = game_state_pkg.currentHandPlayers;
+    showDown: function(currentHandPlayers){
+      let cardHand = null;
+      let cardPlayer = null;
       for(var player in currentHandPlayers){
-        if( !(currentHandPlayers[player].uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
-          this.playersAtTable[player].playerInfo.is_playing = true;
-          this.playersAtTable[player].playerInfo.cardsInHand = [];
-          this.playersAtTable[player].playerInfo.cardsInHand[0] = this.nullCard;
-          this.playersAtTable[player].playerInfo.cardsInHand[1] = this.nullCard;
-          console.log(this.playersAtTable);
+        cardHand = currentHandPlayers[player].cardsInHand;
+        cardPlayer = this.playersAtTable[player];
+
+        cardPlayer.playerInfo.cardsInHand[0].value = cardHand[0].VALUE;
+        cardPlayer.playerInfo.cardsInHand[0].suit = cardHand[0].SUIT;
+
+        cardPlayer.playerInfo.cardsInHand[1].value = cardHand[1].VALUE;
+        cardPlayer.playerInfo.cardsInHand[1].suit = cardHand[1].SUIT;
+      }
+    },
+
+    updateCardHand: function(game_state_pkg){
+      const currentHandPlayers = game_state_pkg.currentHandPlayers;
+      let playerHtmlRect = null;
+      let cardPlayer = null;
+      for(var player in currentHandPlayers){
+        cardPlayer = this.playersAtTable[player];
+        if( !(cardPlayer.playerInfo.uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
+          cardPlayer.playerInfo.is_playing = true;
+          cardPlayer.playerInfo.cardsInHand = [];
+          cardPlayer.playerInfo.cardsInHand[0] = new this.Card(true, [0,0], this.CARD_SCALE_XY);
+          cardPlayer.playerInfo.cardsInHand[1] = new this.Card(true, [0,0], this.CARD_SCALE_XY);
+          this.updatePositionOfPlayerCards(player);
         }
         else if(currentHandPlayers[player].uuid === this.client_uuid){
-          this.clientPlayer.playerInfo.cardsInHand = game_state_pkg.clientHand;
+          const clientHand = game_state_pkg.clientHand;
+          const playerHtmlRect = document.getElementById(player).getBoundingClientRect();
+          const margin = 8;
+          const x = playerHtmlRect.left + playerHtmlRect.width/2;
+          const y = playerHtmlRect.top - this.CARD_SCALE_XY[1] - 30;
+          this.clientPlayer.playerInfo.cardsInHand[1] = new this.Card(false, [x + this.CARD_SCALE_XY[0] + margin, y], this.CARD_SCALE_XY, clientHand[1].SUIT, clientHand[1].VALUE);
+          this.clientPlayer.playerInfo.cardsInHand[0] = new this.Card(false, [x,y], this.CARD_SCALE_XY, clientHand[0].SUIT, clientHand[0].VALUE);
         }
       }
+    },
+
+    updatePositionOfPlayerCards: function(player_uuid){
+      const margin = 8;
+      const playerHtmlRect = document.getElementById(player_uuid).getBoundingClientRect();
+      const y = playerHtmlRect.top + playerHtmlRect.height;
+      const playerCards = this.playersAtTable[player_uuid].playerInfo.cardsInHand;
+
+      playerCards[0].pos_xy = [playerHtmlRect.left, y + margin];
+      playerCards[1].pos_xy = [playerHtmlRect.left + playerCards[1].scale_xy[0] + margin, y + margin];
     },
 
     updateSplashScreenTableList:function(tableInfoPack){
@@ -319,7 +337,13 @@ define(function(){
       document.getElementById("pk-room-pot").innerText = pot+" ₪";
     },
 
-
+    Card: function(face_down, pos_xy, scale, suit, value){
+      this.face_down = face_down;
+      this.pos_xy = pos_xy;
+      this.scale_xy = scale;
+      this.suit = suit === undefined ? 4 : suit;
+      this.value = value || 2;
+    },
 
     PokerPlayerTemplate: function(playerInfoPack){
       return `<div class="pk-player" id=`+playerInfoPack.uuid+`>

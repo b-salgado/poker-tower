@@ -47,9 +47,15 @@ define(["GUI"], function(GUI){
           break;
         case "RESET_INPUTBOX":
           GUI.resetInputbox();
-          break;allIconRadioButtons
+          break;
         case "RESET_RENDERED_GAME_OBJECTS":
           GUI.resetRenderedGameObjects();
+          break;
+        case "SHOW_DOWN":
+          GUI.showDown(event_package.currentHandPlayers.currentHandPlayers);
+          break;
+        case "TABLE_ANNOUNCEMENT":
+          GUI.alertMessage(null, event_package.message);
           break;
         case "UPDATE_CARD_HAND":
           GUI.updateCardHand(event_package.game_state_pkg);
