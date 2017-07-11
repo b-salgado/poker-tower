@@ -43,7 +43,6 @@ const TexHoldEvaluate = {
       else{
         cardPlayer.winCardArray[3] = false;
       }
-
       if(STRAIGHT_IS_POSSIBLE){
         cardPlayer.winCardArray[4] = this.checkStraight(cardPlayer.sevenOf14);
       }
@@ -55,10 +54,11 @@ const TexHoldEvaluate = {
         cardPlayer.winCardArray[0] = this.checkStraightFlush(seven);
       }
       else{
+        console.log(STRAIGHT_IS_POSSIBLE, FLUSH_IS_POSSIBLE);
         cardPlayer.winCardArray[0] = false;
       }
 
-      console.log(cardPlayer);
+      //console.log(cardPlayer);
     }
 
     console.log(Date.now() - t0);
@@ -108,12 +108,12 @@ const TexHoldEvaluate = {
     let winnersUUID = [];
     if(winRank === 7){//binary checks
       for(var i=0; i<playersInRank.length; i++){
-        playersInRank[i].winCardArray[winRank] = this.checkKickers(playersInRank[i].sevenOf14, 3);
+        playersInRank[i].winCardArray[winRank] += this.checkKickers(playersInRank[i].sevenOf14, 3);
       }
     }
     else if(winRank === 6){//binary checks
       for(var i=0; i<playersInRank.length; i++){
-        playersInRank[i].winCardArray[winRank] = this.checkKickers(playersInRank[i].sevenOf14, 1);
+        playersInRank[i].winCardArray[winRank] += this.checkKickers(playersInRank[i].sevenOf14, 1);
       }
     }
 
@@ -128,10 +128,11 @@ const TexHoldEvaluate = {
       }
     }
 
-    for(var winner=0; winner< winners.length; winner++){
-      winnersUUID.push(winners[winner].uuid);
+    for(var i=0; i < winners.length; i++){
+      winnersUUID.push(winners[i].uuid);
     }
 
+    console.log(winners);
     return winnersUUID;
   },
 
@@ -166,7 +167,7 @@ const TexHoldEvaluate = {
     for(var i=0; i<7; i++){
       flushList[seven[i].SUIT].a++;
       if(flushList[seven[i].SUIT].h < seven[i].VALUE){
-        console.log(seven[i].VALUE);
+        //console.log(seven[i].VALUE);
         flushList[seven[i].SUIT].h = seven[i].VALUE;
       }
     }
@@ -183,9 +184,11 @@ const TexHoldEvaluate = {
 
     for(var cardValIndex=14; cardValIndex>9; cardValIndex--){
       if(sevenOf14[cardValIndex] == true){
+        //console.log("herer "  +searchFor5Truths);
         searchFor5Truths++;
         if(searchFor5Truths === 5){
-          return cardValIndex;
+          //console.log("sending "+cardValIndex+4);
+          return cardValIndex + 4;
         }
       }
     }
@@ -203,6 +206,7 @@ const TexHoldEvaluate = {
     let totalCardValue = 0;
     for(var i=14; i>1; i--){//Don't count low ace
       if(sevenOf14[i] == true){
+        //console.log(totalCardValue);
         cardsChecked++;
         totalCardValue += i;
         if(cardsChecked === 5){
@@ -219,7 +223,7 @@ const TexHoldEvaluate = {
         twoPair.push(cardValIndex);
       }
       if(twoPair.length === 2){
-        return twoPair;
+        return twoPair[0] + twoPair[1];
       }
     }
     return false;

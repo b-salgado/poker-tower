@@ -12,11 +12,12 @@ define(["GUI"], function(GUI){
     numberOfTables: 0,
 
     testMode: function(){
-      this.playerClient = { "cardhand": null,
-                            "wealth": 90,
-                            "icon": "0",
-                            "name": "hoss"  };
-
+      this.playerClient = {
+        "cardhand": null,
+        "wealth": 90,
+        "icon": "0",
+        "name": "hoss"
+      };
     },
 
     updateGUI: function(event_package){

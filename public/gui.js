@@ -14,12 +14,7 @@ define(function(){
 
     renderObjects:[],
 
-    nullCard:{
-      face_down: true,
-      suit: 4,
-      value: 2,
-      pos_xy: [null,null]
-    },
+    MARGIN: 10,
 
     init: function(){
       var outerObjEnv = this;
@@ -192,10 +187,10 @@ define(function(){
       var self = this;
       this.canvas2DContext.imageSmoothingEnabled = false;
       var draw = function(){
-        self.canvas2DContext.drawImage(self.background, 0, 0, window.innerWidth, window.innerHeight);
+        //self.canvas2DContext.drawImage(self.background, 0, 0, window.innerWidth, window.innerHeight);
         //self.canvas2DContext.drawImage(self.cardsSprite, 126*1, 0, 126, 181, 80, 180, 80, 100);
-        //self.canvas2DContext.fillStyle = "rgb(119,136,153)"
-        //self.canvas2DContext.fillRect(0,0,window.innerWidth,window.innerHeight);
+        self.canvas2DContext.fillStyle = "rgb(87,173,145)"
+        self.canvas2DContext.fillRect(0,0,window.innerWidth,window.innerHeight);
         self.drawAllCards();
         window.requestAnimationFrame(draw);
       }
@@ -297,7 +292,7 @@ define(function(){
           const playerHtmlRect = document.getElementById(player).getBoundingClientRect();
           const margin = 8;
           const x = playerHtmlRect.left + playerHtmlRect.width/2;
-          const y = playerHtmlRect.top - this.CARD_SCALE_XY[1] - 30;
+          const y = playerHtmlRect.top - this.CARD_SCALE_XY[1] - this.MARGIN;
           this.clientPlayer.playerInfo.cardsInHand[1] = new this.Card(false, [x + this.CARD_SCALE_XY[0] + margin, y], this.CARD_SCALE_XY, clientHand[1].SUIT, clientHand[1].VALUE);
           this.clientPlayer.playerInfo.cardsInHand[0] = new this.Card(false, [x,y], this.CARD_SCALE_XY, clientHand[0].SUIT, clientHand[0].VALUE);
         }

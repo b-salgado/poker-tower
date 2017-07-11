@@ -13,17 +13,17 @@ let pokerTableList = {};
 let pokerPlayerList = {};
 
 //==================Testing Area
-/*
+//
 let table0 = new PokerEntities.Table(10, cardDeck, uuidObj.v4());
 let player0 = {uuid: 9283, cardsInHand: [ {SUIT:0, VALUE:13 }, {SUIT:3, VALUE: 8} ]}
 let player1 = {uuid: 92223, cardsInHand: [ {SUIT:3, VALUE:13 }, {SUIT:1, VALUE: 10} ]}
-table0.communityCards = [ {SUIT:0, VALUE:2 }, {SUIT:1, VALUE: 6}, {SUIT:2, VALUE:4 }, {SUIT:3, VALUE:5 },{SUIT:2, VALUE:14 } ];
+table0.communityCards = [ {SUIT:0, VALUE:2 }, {SUIT:1, VALUE: 3}, {SUIT:2, VALUE:12 }, {SUIT:3, VALUE:13 },{SUIT:2, VALUE:14 } ];
 table0.players[player0.uuid] = player0;
 table0.players[player1.uuid] = player1;
 let winner = TexHoldEvaluate.findTableWinner(table0);
-console.log("Winner is: ");
+console.log("\nWinner is: ");
 console.log(winner);
-*/
+//
 //Testing Area^^^^^^^^^^^^^^^^^
 
 ioPoker.on("connection", function(socket){
@@ -95,7 +95,7 @@ ioPoker.on("connection", function(socket){
     if(table.waitOnBetFrom === socket.id){
       //var betValue = table.lastRaiseAmount;
       table.players[socket.id].is_playing = false;
-      checkGameState(table.uuid);
+      table.checkGameState();
     }
   });
 

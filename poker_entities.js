@@ -93,7 +93,7 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
 }
 
 PokerEntities.Table.prototype.checkGameState = function(io){
-  console.log(this);
+  //console.log(this);
   if(this.allPlayersBet_TF(io)){
     this.lastRaiseAmount = 0;
     console.log("All players have bet. . .");
@@ -240,7 +240,7 @@ PokerEntities.Table.prototype.leave = function(io, socket){
   this.numOfPlayers--;
   if(this.numOfPlayers === 1){
     for(const player in this.players){
-      console.log(this.ante+" here");
+      console.log(this.ante + " here");
       this.players[player].receivesPayout(this.pot);
       this.pot = 0;
       this.sendUpdateTablePot(io);
