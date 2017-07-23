@@ -1,4 +1,8 @@
-"use strict"
+/* jshint browser: true */
+/*global
+alert, confirm, console, prompt, define
+*/
+"use strict";
 define(function(){
   return{
     canvas: null,
@@ -23,7 +27,7 @@ define(function(){
       this.background = this.imageLoader("./assets/red_poker.jpg");
 
       this.initErrorBubbleLogic();
-      this.initAlertPlayerBetLogic();
+      this.initPlayerBetTimers();
       this.cardsSprite = this.imageLoader("./assets/french_deck_0.png");
       this.canvas2DContext.fillStyle = "rgba(100,100,0,1.0)";
 
@@ -32,52 +36,52 @@ define(function(){
       /*===Inital GUI Scaling and Adjust on resize==*/
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
-      this.scaleIcons();
-      this.scaleFonts();
+      //this.scaleIcons();
+      //this.scaleFonts();
       window.onresize = function(){
         outerObjEnv.canvas.width = window.innerWidth;
         outerObjEnv.canvas.height = window.innerHeight;
         //outerObjEnv.scaleIcons();
         //outerObjEnv.scaleFonts();
-      }
+      };
       /*============================================*/
       this.render();
     },
 
-    addPlayer:function(playerInfoPack){
-      if(playerInfoPack.uuid === this.client_uuid){
-        this.addClientPlayer(playerInfoPack);
+    addPlayer:function(playerPkg){
+      console.log(playerPkg, this.client_uuid);
+      if(playerPkg.uuid === this.client_uuid){
+        this.addClientPlayer(playerPkg);
       }
       else{
-        var pokerPlayersContainerTop = document.getElementById("pk-players-container-top");
+        let pokerPlayersContainerTop = document.getElementById("pk-players-container-top");
 
-        var newPlayer = {
-          playerInfo: playerInfoPack,
+        let newPlayer = {
+          playerInfo: playerPkg,
           html: null
         };
 
-        newPlayer.html = this.PokerPlayerTemplate(playerInfoPack);
+        newPlayer.html = this.PokerPlayerTemplate(playerPkg);
         pokerPlayersContainerTop.innerHTML += newPlayer.html;
-        newPlayer.html = document.getElementById(playerInfoPack.uuid);
+        newPlayer.html = document.getElementById(playerPkg.uuid);
 
-        //console.log(newPlayer.html.getBoundingClientRect(), newPlayer.html);
-        newPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name;
+        newPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerPkg.name;
 
         this.playersAtTable[newPlayer.playerInfo.uuid] = newPlayer;
       }
     },
 
-    addClientPlayer:function(playerInfoPack){
+    addClientPlayer:function(playerPkg){
       this.clientPlayer = {
-        playerInfo: playerInfoPack,
+        playerInfo: playerPkg,
         html: null
       };
       this.playersAtTable[this.clientPlayer.playerInfo.uuid] = this.clientPlayer;
       this.clientPlayer.html = document.getElementsByClassName("pk-player-client")[0]; //find client
-      this.clientPlayer.html.id = playerInfoPack.uuid; //set id
-      this.clientPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerInfoPack.name; //set name
-      this.clientPlayer.html.getElementsByClassName("pk-player-icon")[0].src = "./assets/player_icons/"+playerInfoPack.icon;
-      this.clientPlayer.html.getElementsByClassName("pk-player-wealth")[0].innerText = playerInfoPack.wealth+" ₪";
+      this.clientPlayer.html.id = playerPkg.uuid; //set id
+      this.clientPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerPkg.name; //set name
+      this.clientPlayer.html.getElementsByClassName("pk-player-icon")[0].src = "./assets/player_icons/" + playerPkg.icon;
+      this.clientPlayer.html.getElementsByClassName("pk-player-wealth")[0].innerText = "$" + playerPkg.wealth;
     },
 
     addCommunityCard:function(sentCard){
@@ -100,16 +104,12 @@ define(function(){
       errorBubble.classList.add("pk-error-bubble-show");
     },
 
-    alertPlayerBetTimer: function(player){//Eventually program a visual timer
-      const betTimer = document.getElementById("pk-bet-timer");
-      const playerHtmlRect = document.getElementById(this.client_uuid).getBoundingClientRect();
-      betTimer.innerText = "Your turn";
-      betTimer.style.fontSize = "0.9em";
-      betTimer.style.opacity = "1.0";
-      betTimer.style.backgroundColor = "yellow";
-      betTimer.style.left = playerHtmlRect.left + "px";
-      betTimer.style.display = "flex";
-      betTimer.style.top = playerHtmlRect.top - betTimer.getBoundingClientRect().height *2  + "px";
+    startBetTimer: function(timerPkg){//Eventually program a visual timer
+      const betTimer = document.getElementById(timerPkg.player_uuid).getElementsByClassName("pk-bet-timer")[0];
+      const betTimerCircle = betTimer.getElementsByTagName("circle")[0];
+      betTimer.classList.remove("pk-bet-timer-on");//If for whatever reason it wasn't removed before
+      betTimerCircle.style.animationDuration = timerPkg.betTimerTime + "ms";
+      betTimer.classList.add("pk-bet-timer-on");
     },
 
     alertMessage: function(pos, message){
@@ -150,7 +150,7 @@ define(function(){
       const tableRegisterForm = document.getElementsByClassName("pkss-register-table-form")[0];
       const errorBubbles = document.getElementsByClassName("pk-error-bubble");
       const tableInputs = tableRegisterForm.getElementsByTagName("input");
-      for(var errorBubble=0; errorBubble<errorBubbles.length; errorBubble++){
+      for(var errorBubble = 0; errorBubble < errorBubbles.length; errorBubble++){
         errorBubbles[errorBubble].addEventListener("animationend", function(){
           console.log(this);
           this.classList.remove("pk-error-bubble-show");
@@ -158,29 +158,28 @@ define(function(){
       }
     },
 
-    initAlertPlayerBetLogic: function(){ //To be filled with more animations error notices etc...
-      const betTimer = document.getElementById("pk-bet-timer");
-      const inputBox = document.getElementById("pk-inputbox");
-      const inputButtons = document.getElementsByClassName("pk-action");
-      for(var inputButton=0; inputButton<inputButtons.length; inputButton++){
-        inputButtons[inputButton].addEventListener("click", function(){
-          betTimer.style.display = "none";
-        });
+    initPlayerBetTimers: function(){ //To be filled with more animations error notices etc...
+      const betTimers = document.getElementsByClassName("pk-bet-timer");
+      //const betTimerCircles = betTimers.getElementsByTagName("circle");
+      for(var i = 0; i < betTimers.length; i++){
+        if(betTimers[i].getAttribute("timerCountDownEndListener") != true){
+          betTimers[i].addEventListener("animationend", function(){
+            this.classList.remove("pk-bet-timer-on");
+            this.setAttribute("timerCountDownEndListener", true);
+          });
+        }
       }
-      inputBox.addEventListener("click", function(){
-        betTimer.style.display = "none";
-      });
     },
 
     removeSplashScreen: function(){
       document.getElementById("pk-splash-screen").style.display = "none";
     },
 
-    removePlayer: function(playerInfoPack){
-      delete this.playersAtTable[playerInfoPack.uuid];
-      var player = document.getElementById(playerInfoPack.uuid);
+    removePlayer: function(playerPkg){
+      delete this.playersAtTable[playerPkg.uuid];
+      var player = document.getElementById(playerPkg.uuid);
       player.parentNode.removeChild(player);
-      console.log(player, playerInfoPack);
+      console.log(player, playerPkg);
     },
 
     render: function(){
@@ -189,11 +188,11 @@ define(function(){
       var draw = function(){
         //self.canvas2DContext.drawImage(self.background, 0, 0, window.innerWidth, window.innerHeight);
         //self.canvas2DContext.drawImage(self.cardsSprite, 126*1, 0, 126, 181, 80, 180, 80, 100);
-        self.canvas2DContext.fillStyle = "rgb(87,173,145)"
+        self.canvas2DContext.fillStyle = "rgb(87,173,145)";
         self.canvas2DContext.fillRect(0,0,window.innerWidth,window.innerHeight);
         self.drawAllCards();
         window.requestAnimationFrame(draw);
-      }
+      };
       draw();
     },
 
@@ -242,7 +241,7 @@ define(function(){
         var count = 0;
         var labelStyle = window.getComputedStyle(labelsToBeScaled[label]);
         var labelNumFontSize = Number(labelStyle.fontSize.slice(0,-2));
-        var labelParentStyle = window.getComputedStyle(labelsToBeScaled[label].parentElement)
+        var labelParentStyle = window.getComputedStyle(labelsToBeScaled[label].parentElement);
         while(Number(labelStyle.width.slice(0,-2)) < Number(labelParentStyle.width.slice(0,-2)) && Number(labelStyle.height.slice(0,-2)) < Number(labelParentStyle.height.slice(0,-2)) && count<100){
           labelNumFontSize += 0.5;
           labelsToBeScaled[label].style.fontSize = labelNumFontSize+"px";
@@ -274,13 +273,13 @@ define(function(){
       }
     },
 
-    updateCardHand: function(game_state_pkg){
-      const currentHandPlayers = game_state_pkg.currentHandPlayers;
+    updateCardHand: function(gameStatePkg){
+      const currentHandPlayers = gameStatePkg.currentHandPlayers;
       let playerHtmlRect = null;
       let cardPlayer = null;
       for(var player in currentHandPlayers){
         cardPlayer = this.playersAtTable[player];
-        if( !(cardPlayer.playerInfo.uuid === this.client_uuid) ){ //its its not the final round where you need to show cards
+        if(cardPlayer.playerInfo.uuid !== this.client_uuid){ //its its not the final round where you need to show cards
           cardPlayer.playerInfo.is_playing = true;
           cardPlayer.playerInfo.cardsInHand = [];
           cardPlayer.playerInfo.cardsInHand[0] = new this.Card(true, [0,0], this.CARD_SCALE_XY);
@@ -288,7 +287,7 @@ define(function(){
           this.updatePositionOfPlayerCards(player);
         }
         else if(currentHandPlayers[player].uuid === this.client_uuid){
-          const clientHand = game_state_pkg.clientHand;
+          const clientHand = gameStatePkg.clientHand;
           const playerHtmlRect = document.getElementById(player).getBoundingClientRect();
           const margin = 8;
           const x = playerHtmlRect.left + playerHtmlRect.width/2;
@@ -309,8 +308,9 @@ define(function(){
       playerCards[1].pos_xy = [playerHtmlRect.left + playerCards[1].scale_xy[0] + margin, y + margin];
     },
 
-    updateSplashScreenTableList:function(tableInfoPack){
-      var table = this.SplashScreenTableTemplate(tableInfoPack);
+    updateSplashScreenTableList:function(tablePkg){
+
+      var table = this.SplashScreenTableTemplate(tablePkg);
       var tableList = document.getElementById("pkss-current-tables-cntr");
       tableList.innerHTML += table;
     },
@@ -340,27 +340,35 @@ define(function(){
       this.value = value || 2;
     },
 
-    PokerPlayerTemplate: function(playerInfoPack){
-      return `<div class="pk-player" id=`+playerInfoPack.uuid+`>
-        <img class="pk-player-icon" src="./assets/player_icons/`+playerInfoPack.icon+`"></img>
+    PokerPlayerTemplate: function(playerPkg){
+      return `
+      <div class="pk-player" id=`+playerPkg.uuid+`>
+        <div class="pk-icon-cntr">
+          <svg class="pk-bet-timer" width="100px" height="100px">
+            <circle cx="50" cy="50" r="43"/>
+          </svg>
+          <img class="pk-player-icon" src="./assets/player_icons/`+playerPkg.icon+`"></img>
+        </div>
         <span class="pk-player-stat-container">
           <div class="pk-player-name-container">
             <label class="scalable-text pk-player-name"></label>
           </div>
           <div class="pk-player-wealth-container">
-            <label class="scalable-text pk-player-wealth">`+playerInfoPack.wealth+` ₪</label>
+            <label class="scalable-text pk-player-wealth">`+playerPkg.wealth+` ₪</label>
           </div>
         </span>
-      </div>`
+      </div>
+      `;
     },
 
-    SplashScreenTableTemplate: function(tableInfoPack){
+    SplashScreenTableTemplate: function(tablePkg){
       return `
-      <div class="pkss-table-list-element no-sel-drag" id=`+tableInfoPack.uuid+`>
-        <label>`+tableInfoPack.name+`</label><label>$`+tableInfoPack.ante+`</label><label>`+0/0+`</label>
-      </div>`
+      <div class="pkss-table-list-element no-sel-drag" id=`+tablePkg.uuid+`>
+        <label>`+tablePkg.name+`</label><label>$`+tablePkg.ante+`</label><label>`+0/0+`</label>
+      </div>
+      `;
     }
 
 
-  }
-})
+  };
+});

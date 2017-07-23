@@ -10,54 +10,54 @@
 
 <div class="pk-splash-screen" id="pk-splash-screen">
 
-  <h1 class="pkss-game-title">Poker Tower</h1>
+  <!--<h1 class="pkss-game-title">Poker Tower</h1>-->
+  <div class="pkss-gen-gui">
+    <div class="pkss-gen-top">
 
-  <div class="pkss-gen-top">
+      <div class="pkss-player-profile-settings-cntr">
+        <div class="pkss-player-current-profile-cntr">
+          <h3 class="pkss-current-profile-label">Current Player Profile</h3>
+          <img id="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
+          <span class="pkss-current-profile-stat-ctnr">
+            <label id="pkss-current-profile-name">Anonymous</label>
+            <label id="pkss-current-profile-wealth">$Wealth</label>
+          </span>
+        </div>
 
-    <div class="pkss-player-profile-settings-cntr">
-      <div class="pkss-player-current-profile-cntr">
-        <h3 class="pkss-current-profile-label">Current Player Profile</h3>
-        <img id="pkss-current-profile-icon" src="./assets/player_icons/0.jpg"></img>
-        <span class="pkss-current-profile-stat-ctnr">
-          <label id="pkss-current-profile-name">Anonymous</label>
-          <label id="pkss-current-profile-wealth">$Wealth</label>
-        </span>
+        <button id="pkss-change-profile-settings-button" class="pkss-change-profile-settings-button" type="button">Change Profile Settings</button>
       </div>
 
-      <button id="pkss-change-profile-settings-button" class="pkss-change-profile-settings-button" type="button">Change Profile Settings</button>
+      <form id="pkss-change-profile-settings-ctnr" class="pkss-change-profile-settings-ctnr pkss-change-profile-settings-ctnr-closed">
+        <label>name:<input id="poker-splash-input-player-name" value=""></label>
+        <div class="pkss-icon-sel-cntr">
+          {{#each partials.pokerIcons}}
+          <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
+          {{/each}}
+        </div>
+      </form>
+
+      <form class="pkss-register-table-form">
+        <h3 class="pkss-table-header">Create a table</h3>
+        <label>Table Name <input id="pkss-new-table-name" value=""></label>
+        <label>Table Ante <input id="pkss-new-table-ante" type="number" min="2" value=""></label>
+        <label>#Players (2-4) <input id="pkss-new-table-init-players" type="number" min="2" max="4"></label><label> Leave Blank for an open table </label>
+        <button type="button" id="pkss-create-table-button">Click to Create Table</button>
+      </form>
+
     </div>
 
-    <form id="pkss-change-profile-settings-ctnr" class="pkss-change-profile-settings-ctnr pkss-change-profile-settings-ctnr-closed">
-      <label>name:<input id="poker-splash-input-player-name" value=""></label>
-      <div class="pkss-icon-sel-cntr">
-        {{#each partials.pokerIcons}}
-        <img class="pkss-icon-sel-img" src="./assets/player_icons/{{this}}"></img>
-        {{/each}}
+
+    <div class="pkss-gen-bottom">
+      <div id="pkss-player-leaderboard">
+        <div class="pkss-player-leaderboard-element-header"><h3>Player Leader Board</h3></div>
       </div>
-    </form>
-
-    <form class="pkss-register-table-form">
-      <h3 class="pkss-table-header">Create a table</h3>
-      <label>Table Name <input id="pkss-new-table-name" value=""></label>
-      <label>Table Ante <input id="pkss-new-table-ante" value=""></label>
-      <label>#Players (2-4) <input id="pkss-new-table-init-players" type="number" min="2" max="4"></label><label> Leave Blank for an open table </label>
-      <button type="button" id="pkss-create-table-button">Click to Create Table</button>
-    </form>
+      <div id="pkss-current-tables-cntr">
+        <!-- New Tables Generated Dynamically-->
+        <div class="pkss-table-list-element-header"><h3>Current Poker Tables</h3></div>
+      </div>
+    </div>
 
   </div>
-
-
-  <div class="pkss-gen-bottom">
-    <div id="pkss-player-leaderboard">
-      <div class="pkss-player-leaderboard-element-header"><h3>Player Leader Board</h3></div>
-    </div>
-    <div id="pkss-current-tables-cntr">
-      <div class="pkss-table-list-element-header"><h3>Current Poker Tables</h3></div>
-      <!-- New Tables Generated Dynamically-->
-    </div>
-  </div>
-
-
 
 </div>
 
@@ -68,12 +68,19 @@
 </div>
 
 <div class="pk-room-pot-container">
-  <label class="pk-room-pot scalable-text" id="pk-room-pot">0 ₪</label>
+  <label class="pk-room-pot scalable-text" id="pk-room-pot">$0</label>
 </div>
 
 <div class="pk-players-container-bottom">
   <div class="pk-player-client">
-    <img class="pk-player-icon" id="pk-client-player-icon" src=""></img>
+
+    <div class="pk-icon-cntr">
+      <svg class="pk-bet-timer" width="100px" height="100px">
+        <circle cx="50" cy="50" r="43"/>
+      </svg>
+      <img class="pk-player-icon" id="pk-client-player-icon" src=""></img>
+    </div>
+
     <span class="pk-player-stat-container">
       <div class="pk-player-name-container">
         <label class="scalable-text pk-player-name" id="pk-client-player-name"></label>
@@ -93,4 +100,3 @@
 </div>
 
 <div class="pk-error-bubble"></div>
-<div id="pk-bet-timer"></div>

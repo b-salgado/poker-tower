@@ -1,4 +1,8 @@
-"use strict"
+/* jshint node: true */
+/*global
+alert, confirm, console, prompt, define, require, io
+*/
+"use strict";
 const PokerEntities = {
 
   Card: function(suit, value){
@@ -9,7 +13,7 @@ const PokerEntities = {
 
   CardDeck: function(){
     this.cards = [];
-    this.SUITS = [0,1,2,3] // hearts diamonds clubs spades
+    this.SUITS = [0,1,2,3]; // hearts diamonds clubs spades
   },
 
   Player: function(name, uuid){
@@ -26,6 +30,7 @@ const PokerEntities = {
 
   Table: function(ante, cardDeck, uuid){
     this.ante = ante;
+    this.betTimerTime = 5000; //miliseconds
     this.cardDeck = cardDeck;
     this.communityCards = [];
     this.evalutator = null;
@@ -35,13 +40,13 @@ const PokerEntities = {
     this.numOfComCardsOnTable = 0;
     this.numOfPlayers = 0;
     this.initNumOfPlayers = -1; // Not waiting on any players to begin
-    this.players = {}, // all player objects at table
+    this.players = {}; // all player objects at table
     this.pot = 0;
     this.uuid = uuid;
     this.waitOnBetFrom = null;
   }
 
-}
+};
 
 /*=====Player Prototypes======*/
 PokerEntities.Player.prototype.payBets = function(amount){
@@ -53,32 +58,33 @@ PokerEntities.Player.prototype.payBets = function(amount){
     this.wealth -= amount;
     return amount;
   }
-}
-PokerEntities.Player.prototype.setIcon = function(icon){ this.icon = icon };
-PokerEntities.Player.prototype.setName = function(name){ this.name = name };
-PokerEntities.Player.prototype.setUUID = function(uuid){ this.uuid = uuid };
-PokerEntities.Player.prototype.setWealth = function(amount){ this.wealth = amount };
-PokerEntities.Player.prototype.receivesPayout = function(amount){ this.wealth+=amount };
+};
+
+PokerEntities.Player.prototype.setIcon = function(icon){ this.icon = icon; };
+PokerEntities.Player.prototype.setName = function(name){ this.name = name; };
+PokerEntities.Player.prototype.setUUID = function(uuid){ this.uuid = uuid; };
+PokerEntities.Player.prototype.setWealth = function(amount){ this.wealth = amount; };
+PokerEntities.Player.prototype.receivesPayout = function(amount){ this.wealth+=amount; };
 
 /*=======Table Prototypes========*/
 
 PokerEntities.Table.prototype.addPlayer = function(player){
   this.players[player.uuid] = player;
   this.numOfPlayers++;
-}
+};
 
 PokerEntities.Table.prototype.allPlayersBet_TF = function(io){
   var cardPlayer = null;
   for(var player in this.players){
     cardPlayer = this.players[player];
     if(cardPlayer.is_playing && !cardPlayer.placed_bet){
-      io.to(cardPlayer.uuid).emit("ALERT_PLAYER_BET");
+      io.to(this.uuid).emit("START_BET_TIMER", {player_uuid: cardPlayer.uuid, betTimerTime: this.betTimerTime, is_raise: this.lastRaiseAmount} );
       this.waitOnBetFrom = cardPlayer.uuid;
       return false;
     }
   }
   return true;
-}
+};
 
 PokerEntities.Table.prototype.beginGameRound = function(io){
   this.game_started = true;
@@ -90,7 +96,7 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
   this.collectAntes(io);
   this.sendPlayersCards(io);
   this.checkGameState(io);
-}
+};
 
 PokerEntities.Table.prototype.checkGameState = function(io){
   //console.log(this);
@@ -123,7 +129,7 @@ PokerEntities.Table.prototype.checkGameState = function(io){
       this.sendUpdateTablePot(io);
     }
   }
-}
+};
 
 PokerEntities.Table.prototype.showDown = function(io){
   const no_wash = true;
@@ -138,7 +144,7 @@ PokerEntities.Table.prototype.payoutWinners = function(io, winnersAndRank){
     player.receivesPayout(payout);
     this.sendUpdatePlayerWealth(io, player);
   }
-}
+};
 
 PokerEntities.Table.prototype.collectAntes = function(io){
   var cardPlayer = null;
@@ -152,18 +158,18 @@ PokerEntities.Table.prototype.collectAntes = function(io){
     }
   }
   io.to(this.uuid).emit("UPDATE_TABLE_POT", this.pot);
-}
+};
 
 PokerEntities.Table.prototype.dealFlop = function(io){
-  for(var i=0; i<3; i++){
+  for(var i = 0; i < 3; i++){
     io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
     this.numOfComCardsOnTable++;
   }
-}
+};
 
 PokerEntities.Table.prototype.dealPlayers = function(drawnCardList){
-  var card = null;
-  var cardPlayer = null;
+  let card = null;
+  let cardPlayer = null;
   for(var player in this.players){//deal players
     cardPlayer = this.players[player];
     cardPlayer.is_playing = true;
@@ -176,23 +182,23 @@ PokerEntities.Table.prototype.dealPlayers = function(drawnCardList){
       this.players[player].cardsInHand.push(this.cardDeck.cards[card]);
     }
   }
-}
+};
 
 PokerEntities.Table.prototype.dealRiver = function(io){
   io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
   this.numOfComCardsOnTable++;
-}
+};
 
 PokerEntities.Table.prototype.dealTurn = function(io){
   io.in(this.uuid).emit("COMMUNITY_CARD", this.communityCards[this.numOfComCardsOnTable]);
   this.numOfComCardsOnTable++;
-}
+};
 
 PokerEntities.Table.prototype.getPlayers = function(player_uuid){ //No handInfo
   var requestedPlayers = {};
   //console.log(this);
   if(player_uuid){
-    let cardPlayer = Object.assign({}, this.players[player]);
+    let cardPlayer = Object.assign({}, this.players[player_uuid]);
     cardPlayer.cardsInHand = [];
     return cardPlayer;
   }
@@ -204,7 +210,7 @@ PokerEntities.Table.prototype.getPlayers = function(player_uuid){ //No handInfo
     }
     return requestedPlayers;
   }
-}
+};
 
 PokerEntities.Table.prototype.setAllPlayersProperty = function(property, value, playing_only){
   if(playing_only){
@@ -219,7 +225,7 @@ PokerEntities.Table.prototype.setAllPlayersProperty = function(property, value, 
       this.players[player][property] = value;
     }
   }
-}
+};
 
 PokerEntities.Table.prototype.join = function(io, player, socket){
   const self = this;
@@ -232,10 +238,10 @@ PokerEntities.Table.prototype.join = function(io, player, socket){
   socket.to(this.uuid).emit("PLAYER_JOINED", player);
 
   io.to(socket.id).emit("JOINED_TABLE", { players:self.getPlayers(), uuid: self.uuid });
-}
+};
 
 PokerEntities.Table.prototype.leave = function(io, socket){
-  socket.to(this.uuid).emit("PLAYER_LEFT", this.players[socket.id])
+  socket.to(this.uuid).emit("PLAYER_LEFT", this.players[socket.id]);
   delete this.players[socket.id];
   this.numOfPlayers--;
   if(this.numOfPlayers === 1){
@@ -252,7 +258,7 @@ PokerEntities.Table.prototype.leave = function(io, socket){
   if(this.numOfPlayers === 0){
     return true;
   }
-}
+};
 
 PokerEntities.Table.prototype.reset = function(io){
   this.communityCards = [];
@@ -266,7 +272,7 @@ PokerEntities.Table.prototype.reset = function(io){
     this.players[player].cardsInHand = [];
   }
   io.to(this.uuid).emit("RESET_RENDERED_GAME_OBJECTS");
-}
+};
 
 PokerEntities.Table.prototype.storeCommunityCards = function(drawnCardList){
   var card = null;
@@ -278,22 +284,22 @@ PokerEntities.Table.prototype.storeCommunityCards = function(drawnCardList){
     drawnCardList[card] = true;
     this.communityCards.push(this.cardDeck.cards[card]);
   }
-}
+};
 
 PokerEntities.Table.prototype.sendPlayersCards = function(io){
   let currentHandPlayers = this.allPlayingHand();
   for(var player in this.players){
     io.to(player).emit("CARD_HAND", { currentHandPlayers: currentHandPlayers, clientHand: this.players[player].cardsInHand } );
   }
-}
+};
 
 PokerEntities.Table.prototype.sendUpdatePlayerWealth = function(io, player){
   io.to(this.uuid).emit("UPDATE_PLAYER_WEALTH", { player:this.washHand(player) } );
-}
+};
 
 PokerEntities.Table.prototype.sendUpdateTablePot = function(io){
   io.to(this.uuid).emit("UPDATE_TABLE_POT", this.pot);
-}
+};
 
 PokerEntities.Table.prototype.allPlayingHand = function(no_wash){// No handInfo
   var allPlayingHand = {};
@@ -312,7 +318,7 @@ PokerEntities.Table.prototype.allPlayingHand = function(no_wash){// No handInfo
     }
   }
   return allPlayingHand;
-}
+};
 
 PokerEntities.Table.prototype.washHand = function(player){
   let cardPlayer = Object.assign({}, player);
@@ -327,6 +333,6 @@ PokerEntities.CardDeck.prototype.create = function(){
       this.cards.push( new PokerEntities.Card(this.SUITS[suit], cardValue+2) );
     }
   }
-}
+};
 
 module.exports = PokerEntities;

@@ -1,4 +1,8 @@
-"use strict"
+/* jshint browser: true */
+/*global
+alert, confirm, console, prompt, define,io
+*/
+"use strict";
 define(function(){
   return{
     socket: null,
@@ -20,9 +24,9 @@ define(function(){
       this.socket = socket;
 
       //Event Senders
-      this.registerTableOnline = function(tableInfoPack){
-        socket.emit("REGISTER_TABLE", tableInfoPack);
-      }
+      this.registerTableOnline = function(tablePkg){
+        socket.emit("REGISTER_TABLE", tablePkg);
+      };
 
       this.joinTable = function(table_uuid){ //table to join, player to join
         var allIconRadioButtons = document.getElementsByClassName("poker-icon-sel-radio-button");
@@ -38,7 +42,7 @@ define(function(){
           }
         }
         alert("Please Enter a Name and Select an Icon!");
-      }
+      };
 
       //Event Listeners
       /*socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(table_uuid){
@@ -51,21 +55,21 @@ define(function(){
         //console.log("placed_bet");
       });
 
-      socket.on("CARD_HAND", function(game_state_pkg){
-        console.log(game_state_pkg);
-        pgm.updateGUI( {e:"UPDATE_CARD_HAND", game_state_pkg: game_state_pkg} ); //currentHandPlayers, clientHand
+      socket.on("CARD_HAND", function(gameStatePkg){
+        console.log(gameStatePkg);
+        pgm.updateGUI( {e:"UPDATE_CARD_HAND", gameStatePkg: gameStatePkg} ); //currentHandPlayers, clientHand
       });
 
       socket.on("COMMUNITY_CARD", function(card){
         pgm.updateGUI( {e:"ADD_COMMUNITY_CARD", card:card} );
       });
 
-      socket.on("JOINED_TABLE", function(table_info_pack){
-        console.log(table_info_pack);
+      socket.on("JOINED_TABLE", function(tablePkg){
+        console.log(tablePkg);
         pgm.updateGUI( {"e":"REMOVE_SPLASH_SCREEN"} );
-        pgm.updateGUI( {e:"UPDATE_TABLE_UUID", table_uuid:table_info_pack.uuid} );
-        for(var player in table_info_pack.players){
-          pgm.updateGUI( {e:"ADD_PLAYER", player:table_info_pack.players[player]} );
+        pgm.updateGUI( {e:"UPDATE_TABLE_UUID", table_uuid:tablePkg.uuid} );
+        for(var player in tablePkg.players){
+          pgm.updateGUI( {e:"ADD_PLAYER", player:tablePkg.players[player]} );
         }
       });
 
@@ -86,8 +90,14 @@ define(function(){
         pgm.updateGUI( {e:"SHOW_DOWN", currentHandPlayers:currentHandPlayers} );
       });
 
-      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tableInfoPack){
-        pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tableInfoPack:tableInfoPack} );
+      socket.on("START_BET_TIMER", function(timerPkg){ //{player_uuid: playertobet, betTime: timetoplacebet}
+        //console.log(currentHandPlayers);
+        pgm.startBetTimer(timerPkg);
+        pgm.updateGUI( {e:"START_BET_TIMER", timerPkg:timerPkg} );
+      });
+
+      socket.on("SPLASH_SCREEN_TABLE_LIST_ITEM", function(tablePkg){
+        pgm.updateGUI( {e:"UPDATE_SPLASH_SCREEN_TABLE_LIST", tablePkg:tablePkg} );
       });
 
       socket.on("TABLE_ANNOUNCEMENT", function(message){
@@ -99,9 +109,9 @@ define(function(){
         pgm.updateGUI( {e:"UPDATE_CLIENT_UUID", uuid:uuid} );
       });
 
-      socket.on("UPDATE_PLAYER_WEALTH", function(player_pkg){
+      socket.on("UPDATE_PLAYER_WEALTH", function(playerPkg){
         //console.log(player_pkg);
-        pgm.updateGUI( {e:"UPDATE_PLAYER_WEALTH", player:player_pkg.player} );
+        pgm.updateGUI( {e:"UPDATE_PLAYER_WEALTH", player:playerPkg.player} );
       });
 
       socket.on("UPDATE_TABLE_POT", function(pot){
@@ -110,5 +120,5 @@ define(function(){
 
     }
 
-  }
+  };
 });

@@ -49,143 +49,149 @@ button, h1, h2, h3, input, label{
   .pkss-game-title{
     margin: 1%;
   }
-  .pkss-gen-top{
+  .pkss-gen-gui{
+    position: absolute;
     display: flex;
-    flex-direction: row;
-    width: 800px;
-    .pkss-player-profile-settings-cntr{
+    flex-direction: column;
+    top: 8vh;
+    .pkss-gen-top{
       display: flex;
-      flex-direction: column;
-      flex: 1;
-      border-radius: 5em 0% 0% 0%;
-      background-color: rgba(0,0,0,0.1);
-      .pkss-player-current-profile-cntr{
-        //width: 100%;\
-        height: 170px;
-        .pkss-current-profile-label{
-          text-align: right;
-          margin: 2% 5% 2% 2%;
-        }
-        #pkss-current-profile-icon{
-          width: 128px; height: 128px;
-          border-radius: 50% 50% 50% 0%;
-          box-shadow: 0 0 1em $theme-color-0;
-          margin: 0 0 0 3%;
-        }
-        .pkss-current-profile-stat-ctnr{
-          position: absolute;
-          margin: 0 0 0 3%;
-          #pkss-current-profile-name, #pkss-current-profile-wealth{
-            margin: 30px 0;
+      flex-direction: row;
+      width: 800px;
+      .pkss-player-profile-settings-cntr{
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        border-radius: 5em 0% 0% 0%;
+        background-color: rgba(0,0,0,0.1);
+        .pkss-player-current-profile-cntr{
+          //width: 100%;\
+          height: 170px;
+          .pkss-current-profile-label{
             text-align: right;
+            margin: 2% 5% 2% 2%;
+          }
+          #pkss-current-profile-icon{
+            width: 128px; height: 128px;
+            border-radius: 50% 50% 50% 0%;
+            box-shadow: 0 0 1em $theme-color-0;
+            margin: 0 0 0 3%;
+          }
+          .pkss-current-profile-stat-ctnr{
+            position: absolute;
+            margin: 0 0 0 3%;
+            #pkss-current-profile-name, #pkss-current-profile-wealth{
+              margin: 30px 0;
+              text-align: right;
+            }
+          }
+        }
+        button{
+          cursor: pointer;
+          height: 35px;
+        }
+        button:focus{
+          //background-color: red;
+        }
+      }
+      .pkss-change-profile-settings-ctnr{
+        left: 37vw; top: 250px;
+
+        width: $icon-sel-sq-side-px * 3; z-index:64;
+        position: absolute;
+        background-color: rgba(0,0,0,0.2);
+        .pkss-input-player-name{}
+        .pkss-icon-sel-cntr{
+          display: flex;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          .pkss-icon-sel-img{
+            flex: 1;
+            max-width: $icon-sel-sq-side-px;
+            max-height: $icon-sel-sq-side-px;
+            flex-grow: 1;
+            flex-shrink: 1;
           }
         }
       }
-      button{
-        cursor: pointer;
-        height: 35px;
+      .pkss-change-profile-settings-ctnr-closed{
+        display: none;
+        height: 0vh;
       }
-      button:focus{
-        //background-color: red;
-      }
-    }
-    .pkss-change-profile-settings-ctnr{
-      left: 37vw; top: 250px;
 
-      width: $icon-sel-sq-side-px * 3; z-index:64;
-      position: absolute;
-      background-color: rgba(0,0,0,0.2);
-      .pkss-input-player-name{}
-      .pkss-icon-sel-cntr{
+      .pkss-register-table-form{
         display: flex;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        .pkss-icon-sel-img{
-          flex: 1;
-          max-width: $icon-sel-sq-side-px;
-          max-height: $icon-sel-sq-side-px;
-          flex-grow: 1;
-          flex-shrink: 1;
+        flex-direction: column;
+        flex: 1;
+        justify-content: space-between;
+        border-radius: 0% 5% 0% 0%;
+        background-color: rgba(0,0,0,0.1);
+        .pkss-table-header{
+          text-align: left;
+          margin: 2% 2% 2% 5%;
         }
-      }
-    }
-    .pkss-change-profile-settings-ctnr-closed{
-      display: none;
-      height: 0vh;
-    }
-
-    .pkss-register-table-form{
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-      border-radius: 0% 5% 0% 0%;
-      background-color: rgba(0,0,0,0.1);
-      .pkss-table-header{
-        text-align: left;
-        margin: 2% 2% 2% 5%;
-      }
-      label{
-        margin: 0% 0% 0% 5%;
-        font-size: 1.1em;
-      }
-      input{
-        box-shadow: inset 0 0 1em $theme-color-0;;
-        background: rgba(0,0,0,0.1);
-        height: 20px;
-      }
-      button{
-        cursor: pointer;
-        height: 35px;
-      }
-    }
-  }
-  .pkss-gen-bottom{
-    display: flex;
-
-    flex-direction: row;
-    width: 800px;
-    background: rgba(0, 0, 0, 0.0); //first shade
-    h3{
-      text-align: center;
-    }
-    #pkss-player-leaderboard{
-      flex: 1;
-      .pkss-player-leaderboard-element-header{
-        //background: rgba(255,0,60,0.5);
-        background: $theme-color-0;
-        display: flex;
-        justify-content: center; align-items: center;
-        height: 35px;
-      }
-    }
-    #pkss-current-tables-cntr{
-      flex: 1;
-      border-radius: 0% 0% 5% 0%;
-      .pkss-table-list-element-header{
-        background: $theme-color-0;
-        display: flex;
-        justify-content: center; align-items: center;
-        height: 35px;
-      }
-      .pkss-table-list-element,
-      {
-        display: flex;
-        justify-content: center; align-items: center;
-        height: 45px;
-        background: rgba(0,0,0,0.1); //second shade
-        border-radius: 1em;
-        box-shadow: 0px 0px 1px black;
-        cursor: pointer;
         label{
+          margin: 0% 0% 0% 5%;
+          font-size: 1.1em;
+        }
+        input{
+          box-shadow: inset 0 0 1em $theme-color-0;;
+          background: rgba(0,0,0,0.1);
+          height: 20px;
+        }
+        button{
           cursor: pointer;
-          margin: 0 5px
+          height: 35px;
         }
       }
-      .pkss-table-list-element:hover{
-        box-shadow: 0px 0px 1em black;
-        background: rgba(0,0,0,0.0);
-        transition: box-shadow 0.5s, background 0.5s;
+    }
+    .pkss-gen-bottom{
+      display: flex;
+
+      flex-direction: row;
+      width: 800px;
+      background: rgba(0, 0, 0, 0.0); //first shade
+      h3{
+        text-align: center;
+      }
+      #pkss-player-leaderboard{
+        flex: 1;
+        .pkss-player-leaderboard-element-header{
+          //background: rgba(255,0,60,0.5);
+          background: $theme-color-0;
+          display: flex;
+          justify-content: center; align-items: center;
+          height: 35px;
+        }
+      }
+      #pkss-current-tables-cntr{
+        flex: 1;
+        border-radius: 0% 0% 5% 0%;
+        .pkss-table-list-element-header{
+          background: $theme-color-0;
+          display: flex;
+          justify-content: center; align-items: center;
+          height: 35px;
+        }
+        .pkss-table-list-element,
+        {
+          display: flex;
+          justify-content: center; align-items: center;
+          height: 45px;
+          background: rgba(0,0,0,0.1); //second shade
+          border-radius: 1em;
+          box-shadow: 0px 0px 1px black;
+          cursor: pointer;
+          label{
+            cursor: pointer;
+            margin: 0 5px
+          }
+        }
+        .pkss-table-list-element:hover{
+          box-shadow: 0px 0px 1em black;
+          background: rgba(0,0,0,0.0);
+          transition: box-shadow 0.5s, background 0.5s;
+        }
       }
     }
   }

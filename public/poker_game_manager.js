@@ -1,4 +1,8 @@
-"use strict"
+/* jshint browser: true */
+/*global
+alert, confirm, console, prompt, define,io
+*/
+"use strict";
 define(["GUI"], function(GUI){
   return{
     cardDeck: null,
@@ -20,6 +24,18 @@ define(["GUI"], function(GUI){
       };
     },
 
+    startBetTimer: function(timerPkg){
+      const self = this;
+      setTimeout(function(){
+        if(timerPkg.is_raise){
+          self.inputEventQueue.push( {func:"inputPlayerFold", args:[] } );
+        }
+        else{
+          self.inputEventQueue.push( {func:"inputPlayerCall", args:[] } );
+        }
+      }, timerPkg.betTimerTime);
+    },
+
     updateGUI: function(event_package){
       switch(event_package.e){
         case "ADD_COMMUNITY_CARD":
@@ -27,8 +43,8 @@ define(["GUI"], function(GUI){
           break;
         case "ADD_PLAYER": //Reduce all player adding and removing to one playerUpdate() function
           GUI.addPlayer(event_package.player);
-          GUI.scaleFonts();
-          GUI.scaleIcons();
+          //GUI.scaleFonts();
+          //GUI.scaleIcons();
           break;
         case "ALERT_PLAYER_BET":
           GUI.alertPlayerBetTimer();
@@ -53,13 +69,16 @@ define(["GUI"], function(GUI){
           GUI.resetRenderedGameObjects();
           break;
         case "SHOW_DOWN":
-          GUI.showDown(event_package.currentHandPlayers.currentHandPlayers);
+          GUI.showDown(event_package.currentHandPlayers);
+          break;
+        case "START_BET_TIMER":
+            GUI.startBetTimer(event_package.timerPkg);
           break;
         case "TABLE_ANNOUNCEMENT":
           GUI.alertMessage(null, event_package.message);
           break;
         case "UPDATE_CARD_HAND":
-          GUI.updateCardHand(event_package.game_state_pkg);
+          GUI.updateCardHand(event_package.gameStatePkg);
           break;
         case "UPDATE_PLAYER_WEALTH":
           GUI.updatePlayerWealth(event_package.player);
@@ -72,12 +91,12 @@ define(["GUI"], function(GUI){
           GUI.updateRoomUUID(event_package.table_uuid);
           break;
         case "UPDATE_SPLASH_SCREEN_TABLE_LIST":
-          GUI.updateSplashScreenTableList(event_package.tableInfoPack);
-          this.inputEventQueue.push( {func:"addListenerToNewTableElement", args:[event_package.tableInfoPack.uuid]} );
+          GUI.updateSplashScreenTableList(event_package.tablePkg);
+          this.inputEventQueue.push( {func:"addListenerToNewTableElement", args:[event_package.tablePkg.uuid]} );
           this.numberOfTables++;
           break;
       }
     },
 
-  }
+  };
 });
