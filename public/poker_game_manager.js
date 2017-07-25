@@ -13,6 +13,7 @@ define(["GUI"], function(GUI){
     table: null,
     table_uuid: null,
     THPSocket: null,
+    timerCallback: null,
     numberOfTables: 0,
 
     testMode: function(){
@@ -25,15 +26,25 @@ define(["GUI"], function(GUI){
     },
 
     startBetTimer: function(timerPkg){
+      console.log(timerPkg.player_uuid, this.client_uuid);
       const self = this;
-      setTimeout(function(){
-        if(timerPkg.is_raise){
-          self.inputEventQueue.push( {func:"inputPlayerFold", args:[] } );
+      if(timerPkg.player_uuid === this.client_uuid){
+        if(timerPkg.is_raise === true){
+          this.timerCallback = setTimeout(function(){
+            (function(self){
+              self.inputEventQueue.push( {func:"inputPlayerFold", args:[] } );
+            })(self);
+          }, timerPkg.betTimerTime);
         }
         else{
-          self.inputEventQueue.push( {func:"inputPlayerCall", args:[] } );
+          this.timerCallback = setTimeout(function(){
+            (function(self){
+              console.log("called");
+              self.inputEventQueue.push( {func:"inputPlayerCall", args:[] } );
+            })(self);
+          }, timerPkg.betTimerTime);
         }
-      }, timerPkg.betTimerTime);
+      }
     },
 
     updateGUI: function(event_package){
@@ -50,7 +61,7 @@ define(["GUI"], function(GUI){
           GUI.alertPlayerBetTimer();
           break;
         case "UPDATE_CLIENT_UUID":
-          //this.client_uuid = event_package.uuid;
+          this.client_uuid = event_package.uuid;
           GUI.client_uuid = event_package.uuid;
           break;
         case "DISPLAY_ERROR_BUBBLE":
@@ -73,6 +84,7 @@ define(["GUI"], function(GUI){
           break;
         case "START_BET_TIMER":
             GUI.startBetTimer(event_package.timerPkg);
+            GUI.stopBetTimerForNotTurn(event_package.timerPkg);
           break;
         case "TABLE_ANNOUNCEMENT":
           GUI.alertMessage(null, event_package.message);

@@ -79,7 +79,6 @@ ioPoker.on("connection", function(socket){
     if(table.waitOnBetFrom === socket.id){
       let betValue = table.lastRaiseAmount;
       const player = table.players[socket.id];
-      console.log(socket.uuid + " has called for $" + betValue);
       if(betValue < player.wealth){
         table.pot += betValue;
         table.lastRaiseAmount = betValue;
@@ -93,6 +92,8 @@ ioPoker.on("connection", function(socket){
       player.placed_bet = true;
       sendUpdatePlayerWealth(table, player);
       sendUpdateTablePot(table);
+
+      console.log(socket.uuid + " has called for $" + betValue);
       table.checkGameState(ioPoker);
     }
   });
@@ -110,7 +111,7 @@ ioPoker.on("connection", function(socket){
     const table = pokerTableList[bet_package.table_uuid];
     let betValue = bet_package.betValue;
     let amountPlayerPaid = 0;
-    if(table.waitOnBetFrom === socket.id && betValue>table.lastRaiseAmount){
+    if(table.waitOnBetFrom === socket.id && betValue > table.lastRaiseAmount){
       let player = table.players[socket.id];
       if(betValue < player.wealth){
         table.pot += betValue;

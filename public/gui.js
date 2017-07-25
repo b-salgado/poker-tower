@@ -68,6 +68,8 @@ define(function(){
         newPlayer.html.getElementsByClassName("pk-player-name")[0].innerText = playerPkg.name;
 
         this.playersAtTable[newPlayer.playerInfo.uuid] = newPlayer;
+
+        this.initPlayerBetTimers();
       }
     },
 
@@ -110,6 +112,14 @@ define(function(){
       betTimer.classList.remove("pk-bet-timer-on");//If for whatever reason it wasn't removed before
       betTimerCircle.style.animationDuration = timerPkg.betTimerTime + "ms";
       betTimer.classList.add("pk-bet-timer-on");
+    },
+
+    stopBetTimerForNotTurn: function(timerPkg){
+      if(timerPkg.player_uuid !== this.client_uuid){
+        const betTimer = document.getElementById(this.client_uuid).getElementsByClassName("pk-bet-timer")[0];
+        const betTimerCircle = betTimer.getElementsByTagName("circle")[0];
+        betTimer.classList.remove("pk-bet-timer-on");//If for whatever reason it wasn't removed before
+      }
     },
 
     alertMessage: function(pos, message){
@@ -261,8 +271,10 @@ define(function(){
     showDown: function(currentHandPlayers){
       let cardHand = null;
       let cardPlayer = null;
+      console.log(this.playersAtTable);
       for(var player in currentHandPlayers){
         cardHand = currentHandPlayers[player].cardsInHand;
+        console.log(player, this.playersAtTable[player]);
         cardPlayer = this.playersAtTable[player];
 
         cardPlayer.playerInfo.cardsInHand[0].value = cardHand[0].VALUE;

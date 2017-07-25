@@ -30,11 +30,12 @@ const PokerEntities = {
 
   Table: function(ante, cardDeck, uuid){
     this.ante = ante;
-    this.betTimerTime = 5000; //miliseconds
+    this.betTimerTime = 10000; //miliseconds
     this.cardDeck = cardDeck;
     this.communityCards = [];
     this.evalutator = null;
     this.game_started = false;
+    this.game_done = false;
     this.lastRaiseAmount = 0;
     this.name = null;
     this.numOfComCardsOnTable = 0;
@@ -78,6 +79,7 @@ PokerEntities.Table.prototype.allPlayersBet_TF = function(io){
   for(var player in this.players){
     cardPlayer = this.players[player];
     if(cardPlayer.is_playing && !cardPlayer.placed_bet){
+      console.log(io + " here");
       io.to(this.uuid).emit("START_BET_TIMER", {player_uuid: cardPlayer.uuid, betTimerTime: this.betTimerTime, is_raise: this.lastRaiseAmount} );
       this.waitOnBetFrom = cardPlayer.uuid;
       return false;
@@ -100,7 +102,12 @@ PokerEntities.Table.prototype.beginGameRound = function(io){
 
 PokerEntities.Table.prototype.checkGameState = function(io){
   //console.log(this);
-  if(this.allPlayersBet_TF(io)){
+  if(this.game_done){
+    this.reset(io);
+    this.game_done = false;
+    this.beginGameRound(io);
+  }
+  else if(this.allPlayersBet_TF(io)){
     this.lastRaiseAmount = 0;
     console.log("All players have bet. . .");
     if(this.numOfComCardsOnTable === 0){
@@ -127,6 +134,7 @@ PokerEntities.Table.prototype.checkGameState = function(io){
       this.payoutWinners(io, winnersAndRank);
       this.pot = 0;
       this.sendUpdateTablePot(io);
+      this.game_done = true;
     }
   }
 };
@@ -134,7 +142,7 @@ PokerEntities.Table.prototype.checkGameState = function(io){
 PokerEntities.Table.prototype.showDown = function(io){
   const no_wash = true;
   let currentHandPlayers = this.allPlayingHand(no_wash);
-  io.to(this.uuid).emit("SHOW_DOWN", { currentHandPlayers: currentHandPlayers} );
+  io.to(this.uuid).emit("SHOW_DOWN", currentHandPlayers );
 },
 
 PokerEntities.Table.prototype.payoutWinners = function(io, winnersAndRank){

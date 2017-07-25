@@ -115,14 +115,19 @@ const TexHoldEvaluate = {
     let winnersUUID = [];
     let i = 0;
 
-    if(winRank === 7){//binary checks
+    if(winRank === 7){//pair
       for(i = 0; i < playersInRank.length; i++){
         playersInRank[i].winCardArray[winRank] += this.checkKickers(playersInRank[i].sevenOf14, 3);
       }
     }
-    else if(winRank === 6){//binary checks
+    else if(winRank === 6 || winRank === 1){//two pair fourofkind
       for(i = 0; i < playersInRank.length; i++){
         playersInRank[i].winCardArray[winRank] += this.checkKickers(playersInRank[i].sevenOf14, 1);
+      }
+    }
+    else if(winRank === 5){//threeofkind
+      for(i = 0; i < playersInRank.length; i++){
+        playersInRank[i].winCardArray[winRank] += this.checkKickers(playersInRank[i].sevenOf14, 2);
       }
     }
 

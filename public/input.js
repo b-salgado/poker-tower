@@ -5,7 +5,7 @@ alert, confirm, console, prompt, define
 "use strict";
 define(["PokerGameManager"], function(pgm){
   return{
-    POLL_EVENT_QUEUE: 800,
+    POLL_EVENT_QUEUE: 300,
     init: function(){
       this.cinCurrentPlayerInfo();
       this.addEvtListeners();
@@ -21,6 +21,7 @@ define(["PokerGameManager"], function(pgm){
           const doFunc = pgm.inputEventQueue.pop();
           self[doFunc.func](doFunc.args[0]);
           console.log(pgm.inputEventQueue);
+
         }
       }, self.POLL_EVENT_QUEUE);
     },
@@ -132,30 +133,42 @@ define(["PokerGameManager"], function(pgm){
 
     inputPlayerCall: function(){
       pgm.THPSocket.socket.emit("PLAYER_CALL", {table_uuid: pgm.table_uuid} );
+      console.log("call");
     },
 
     inputPlayerRaise: function(){
       const pokerInputVal = document.getElementById("pk-inputbox").value.trim();
-      if(!Number(pokerInputVal)){
+      const raiseAmount = parseInt(pokerInputVal, 10);
+      if(!Number(raiseAmount)){
         alert("Enter a numerical value!");
       }
-      else if(pokerInputVal < 0){
+      else if(raiseAmount < 0){
         alert("Enter a numerical value greater than 0!");
       }
-      else if(pokerInputVal){
+      else if(raiseAmount){
         console.log(pgm.THPSocket);
-        pgm.THPSocket.socket.emit("PLAYER_RAISE", {table_uuid: pgm.table_uuid, betValue: pokerInputVal} );
+        pgm.THPSocket.socket.emit("PLAYER_RAISE", {table_uuid: pgm.table_uuid, betValue: raiseAmount} );
         pgm.updateGUI( {e:"RESET_INPUTBOX"} );
       }
     },
 
     addEvtListeners:function(){
       const self = this;
-      document.getElementById("pk-raise").addEventListener("click", self.inputPlayerRaise);
 
-      document.getElementById("pk-call").addEventListener("click", self.inputPlayerCall);
+      document.getElementById("pk-raise").addEventListener("click", function(){
+        clearTimeout(pgm.timerCallback);
+        self.inputPlayerRaise();
+      });
 
-      document.getElementById("pk-fold").addEventListener("click", self.inputPlayerFold);
+      document.getElementById("pk-call").addEventListener("click", function(){
+        clearTimeout(pgm.timerCallback);
+        self.inputPlayerCall();
+      });
+
+      document.getElementById("pk-fold").addEventListener("click", function(){
+        clearTimeout(pgm.timerCallback);
+        self.inputPlayerFold();
+      });
 
       window.addEventListener("keydown", function(e){
         console.log(e.which);
