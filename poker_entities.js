@@ -30,7 +30,7 @@ const PokerEntities = {
 
   Table: function(ante, cardDeck, uuid){
     this.ante = ante;
-    this.betTimerTime = 10000; //miliseconds
+    this.betTimerTime = 8000; //miliseconds
     this.cardDeck = cardDeck;
     this.communityCards = [];
     this.evalutator = null;
@@ -71,7 +71,9 @@ PokerEntities.Player.prototype.receivesPayout = function(amount){ this.wealth+=a
 
 PokerEntities.Table.prototype.addPlayer = function(player){
   this.players[player.uuid] = player;
+  console.log("numOfPlayers = " + this.numOfPlayers);
   this.numOfPlayers++;
+  console.log("numOfPlayers = " + this.numOfPlayers);
 };
 
 PokerEntities.Table.prototype.allPlayersBet_TF = function(io){
@@ -79,8 +81,12 @@ PokerEntities.Table.prototype.allPlayersBet_TF = function(io){
   for(var player in this.players){
     cardPlayer = this.players[player];
     if(cardPlayer.is_playing && !cardPlayer.placed_bet){
+      let is_raise = false;
       console.log(io + " here");
-      io.to(this.uuid).emit("START_BET_TIMER", {player_uuid: cardPlayer.uuid, betTimerTime: this.betTimerTime, is_raise: this.lastRaiseAmount} );
+      if(this.lastRaiseAmount > 0){
+        is_raise = true;
+      }
+      io.to(this.uuid).emit("START_BET_TIMER", {player_uuid: cardPlayer.uuid, betTimerTime: this.betTimerTime, is_raise: is_raise} );
       this.waitOnBetFrom = cardPlayer.uuid;
       return false;
     }
@@ -107,6 +113,22 @@ PokerEntities.Table.prototype.checkGameState = function(io){
     this.game_done = false;
     this.beginGameRound(io);
   }
+
+  else if(this.game_started && this.numOfPlayers < 2){
+    this.setAllPlayersProperty("placed_bet", false, true);
+    console.log("numOfPlayers " + this.numOfPlayers);
+  //  io.in(this.uuid).emit("GAME_WIN", winnersAndRan);
+    this.showDown(io);
+    for(var player in this.players){
+      if(this.players[player].is_playing === true){
+        let winnersAndRank = {winners: [player]};
+        this.payoutWinners(io, winnersAndRank); //bug will send to all players. also check if players is all players at table or all playing
+      }
+    }
+    this.pot = 0;
+    this.sendUpdateTablePot(io);
+  }
+
   else if(this.allPlayersBet_TF(io)){
     this.lastRaiseAmount = 0;
     console.log("All players have bet. . .");
@@ -143,7 +165,7 @@ PokerEntities.Table.prototype.showDown = function(io){
   const no_wash = true;
   let currentHandPlayers = this.allPlayingHand(no_wash);
   io.to(this.uuid).emit("SHOW_DOWN", currentHandPlayers );
-},
+};
 
 PokerEntities.Table.prototype.payoutWinners = function(io, winnersAndRank){
   const payout = Math.floor(this.pot / winnersAndRank.winners.length);// House takes the change

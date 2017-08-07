@@ -29,6 +29,7 @@ define(["GUI"], function(GUI){
       console.log(timerPkg.player_uuid, this.client_uuid);
       const self = this;
       if(timerPkg.player_uuid === this.client_uuid){
+        console.log(timerPkg);
         if(timerPkg.is_raise === true){
           this.timerCallback = setTimeout(function(){
             (function(self){
