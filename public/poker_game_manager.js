@@ -48,6 +48,15 @@ define(["GUI"], function(GUI){
       }
     },
 
+    gameWin: function(){
+      const self = this;
+      this.timerCallback = setTimeout(function(){
+        (function(self){
+          self.THPSocket.socket.emit("START_GAME");
+        })(self);
+      }, 2000);// 2s HARD CODE
+    },
+
     updateGUI: function(event_package){
       switch(event_package.e){
         case "ADD_COMMUNITY_CARD":

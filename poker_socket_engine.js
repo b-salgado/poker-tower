@@ -65,7 +65,7 @@ ioPoker.on("connection", function(socket){
 
     table.join(ioPoker, player, socket);
 
-    if(table.numOfPlayers > 1 && !table.game_started){
+    if(table.numPlayersAtTable > 1 && !table.game_started){
       table.beginGameRound(ioPoker);
     }
     else if(table.initNumOfPlayers === table.amount && !table.game_started){
@@ -103,8 +103,11 @@ ioPoker.on("connection", function(socket){
     if(table.waitOnBetFrom === socket.id){
       //var betValue = table.lastRaiseAmount;
       table.players[socket.id].is_playing = false;
-      table.numOfPlayers--;
-      table.checkGameState(io);
+      table.numPlayersPlayingHand--;
+
+      console.log(socket.id + " has folded. " + table.numPlayersPlayingHand + " now playing.");
+
+      table.checkGameState(ioPoker);
     }
   });
 
@@ -126,13 +129,20 @@ ioPoker.on("connection", function(socket){
         amountPlayerPaid = player.wealth;
         player.payBets(player.wealth);
       }
-      const message = player.name + " has raised " + amountPlayerPaid + ". Call " + amountPlayerPaid + " or raise above " + amountPlayerPaid;
+      const message = player.name + " raised " + amountPlayerPaid;
       ioPoker.to(table.uuid).emit("TABLE_ANNOUNCEMENT", message);
       table.setAllPlayersProperty("placed_bet", false, true);
       player.placed_bet = true;
       table.sendUpdatePlayerWealth(ioPoker, player);
       table.sendUpdateTablePot(ioPoker);
       table.checkGameState(ioPoker);
+    }
+  });
+
+  socket.on("START_GAME", function(){
+    const table = pokerPlayerList[socket.id];
+    if(table.game_done === true){
+      table.beginGameRound(ioPoker);
     }
   });
 

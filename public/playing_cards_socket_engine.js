@@ -64,6 +64,10 @@ define(function(){
         pgm.updateGUI( {e:"ADD_COMMUNITY_CARD", card:card} );
       });
 
+      socket.on("GAME_WIN", function(){
+        pgm.gameWin();
+      });
+
       socket.on("JOINED_TABLE", function(tablePkg){
         console.log(tablePkg);
         pgm.updateGUI( {"e":"REMOVE_SPLASH_SCREEN"} );
